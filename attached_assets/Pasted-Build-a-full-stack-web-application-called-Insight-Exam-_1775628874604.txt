@@ -1,0 +1,84 @@
+Build a full-stack web application called "Insight Exam - محلل أسئلة الاختبارات السابقة" — an educational platform that helps university students analyze past exam questions to study smarter.
+Tech Stack
+
+Frontend: React + Tailwind CSS + Recharts (for charts)
+Backend: Node.js + Express
+Database: PostgreSQL (Replit DB)
+Language: UI must be fully in Arabic (RTL layout)
+
+Pages & Features
+1. Landing Page (الصفحة الرئيسية)
+
+Hero section with the app name "Insight Exam" and a short Arabic tagline: "حوّل مراجعتك من عشوائية إلى ذكية"
+Brief explanation of how the platform works in 3 steps (أضف الأسئلة → النظام يحلل → شاهد النتائج)
+Call-to-action button: "ابدأ الآن"
+Clean, modern, educational design with a blue/white color scheme
+
+2. Authentication (تسجيل الدخول / إنشاء حساب)
+
+Simple signup/login with email and password
+After login, redirect to Dashboard
+
+3. Add Course Page (إضافة مقرر)
+
+User can create a new course by entering: Course Name (اسم المقرر), Course Code (رمز المقرر), Professor Name (اسم الأستاذ)
+Each user can have multiple courses
+
+4. Add Questions Page (إضافة أسئلة)
+
+A form to manually input past exam questions for a selected course
+Fields for each question:
+
+Question text (نص السؤال) — text area
+Chapter/Topic (الفصل/الموضوع) — dropdown or text input
+Question type (نوع السؤال) — dropdown: اختيار من متعدد | صح وخطأ | مقالي | أكمل الفراغ
+Difficulty level (مستوى الصعوبة) — dropdown: سهل | متوسط | صعب
+Exam year/semester (السنة/الفصل الدراسي) — e.g. 1445 H - الفصل الأول
+
+
+Button to add another question without leaving the page
+Show a counter: "تم إضافة X سؤال"
+
+5. Dashboard — Analytics Page (لوحة التحليلات) ⭐ MOST IMPORTANT
+This is the core feature. After questions are entered for a course, show an interactive dashboard with these charts:
+
+Bar Chart: "الموضوعات الأكثر تكراراً" — shows which chapters/topics appear most frequently
+Pie Chart: "توزيع أنواع الأسئلة" — shows the distribution of question types (MCQ, True/False, Essay, Fill-in-the-blank)
+Bar Chart: "توزيع مستوى الصعوبة" — shows Easy vs Medium vs Hard distribution
+Line Chart or Bar Chart: "تكرار الأسئلة حسب السنة" — shows question frequency across different exam years
+Summary Cards at the top:
+
+إجمالي الأسئلة (Total questions)
+الموضوع الأكثر تكراراً (Most repeated topic)
+نوع السؤال الأكثر شيوعاً (Most common question type)
+مستوى الصعوبة الغالب (Dominant difficulty level)
+
+
+Smart Recommendation Section at the bottom: "توصيات المراجعة" — based on analysis, show text like: "ركز على الفصل 3 والفصل 5 حيث يمثلان 60% من الأسئلة" and "الأسئلة غالباً من نوع اختيار من متعدد بمستوى صعوبة متوسط"
+
+6. My Courses Page (مقرراتي)
+
+List all courses the user created
+Click on any course to see its dashboard/analytics
+Option to add more questions to any course
+
+Design Requirements
+
+Fully RTL (right-to-left) Arabic layout
+Use an Arabic-friendly font like IBM Plex Sans Arabic or Tajawal (from Google Fonts)
+Color palette: Primary blue (#2563EB), white background, light gray cards, green for positive indicators
+Modern, clean, minimal design — student-friendly
+Fully responsive (mobile + desktop)
+Include the branding name "Insight Exam" in the header/navbar with a simple icon
+
+Database Schema (suggested)
+
+users: id, name, email, password_hash, created_at
+courses: id, user_id, name, code, professor, created_at
+questions: id, course_id, text, chapter, question_type, difficulty, exam_period, created_at
+
+Important Notes
+
+The dashboard analytics should calculate everything dynamically from the stored questions
+Seed the database with sample data for one course (15-20 example questions) so the dashboard looks good on first visit
+Add a footer mentioning: "Insight Exam — مشروع ابتكار تعليمي | جامعة الأمير سطام بن عبدالعزيز"
