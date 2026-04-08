@@ -2,7 +2,8 @@ import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { useLogin, getGetMeQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { BarChart2, Mail, Lock } from "lucide-react";
+import { Mail, Lock } from "lucide-react";
+import logo from "@assets/insight_exam_logo_1_1775630424807.png";
 
 export default function Login() {
   const [, navigate] = useLocation();
@@ -28,7 +29,7 @@ export default function Login() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 text-blue-600 font-bold text-2xl mb-2">
-            <BarChart2 className="h-8 w-8" />
+            <img src={logo} alt="Insight Exam" className="h-11 w-11 rounded-xl object-cover" />
             Insight Exam
           </div>
           <h1 className="text-2xl font-bold text-slate-800">تسجيل الدخول</h1>

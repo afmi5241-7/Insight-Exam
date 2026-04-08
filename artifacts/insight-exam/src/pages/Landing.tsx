@@ -1,6 +1,7 @@
 import { Link } from "wouter";
-import { BarChart2, Brain, Target, TrendingUp, ArrowLeft } from "lucide-react";
+import { Brain, Target, TrendingUp, ArrowLeft } from "lucide-react";
 import Footer from "@/components/Footer";
+import logo from "@assets/insight_exam_logo_1_1775630424807.png";
 
 export default function Landing() {
   return (
@@ -10,7 +11,7 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-2 text-blue-600 font-bold text-xl">
-              <BarChart2 className="h-7 w-7" />
+              <img src={logo} alt="Insight Exam" className="h-10 w-10 rounded-lg object-cover" />
               <span>Insight Exam</span>
             </div>
             <div className="flex items-center gap-4">

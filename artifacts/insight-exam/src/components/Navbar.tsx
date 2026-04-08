@@ -2,8 +2,9 @@ import { Link, useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
 import { useLogout, getGetMeQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
-import { BookOpen, BarChart2, PlusCircle, LogOut, Menu, X } from "lucide-react";
+import { PlusCircle, LogOut, Menu, X, BarChart2 } from "lucide-react";
 import { useState } from "react";
+import logo from "@assets/insight_exam_logo_1_1775630424807.png";
 
 export default function Navbar() {
   const { user } = useAuth();
@@ -26,7 +27,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/dashboard" className="flex items-center gap-2 text-blue-600 font-bold text-lg">
-            <BarChart2 className="h-6 w-6" />
+            <img src={logo} alt="Insight Exam" className="h-9 w-9 rounded-lg object-cover" />
             <span>Insight Exam</span>
           </Link>
 
