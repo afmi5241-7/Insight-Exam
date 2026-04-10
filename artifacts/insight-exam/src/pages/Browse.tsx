@@ -160,9 +160,6 @@ export default function Browse() {
           <h2 className="font-bold text-[#0f2240] dark:text-white text-lg mb-1">ابحث عن مقررك</h2>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-400 dark:text-slate-500 mb-2 uppercase tracking-wide">
-              الخطوة ١ — اختر الكلية
-            </label>
             <div className="relative">
               <GraduationCap className="absolute top-1/2 -translate-y-1/2 right-3.5 h-4 w-4 text-slate-400 pointer-events-none" />
               <select
@@ -180,9 +177,6 @@ export default function Browse() {
 
           {faculty && (
             <div className="animate-in fade-in slide-in-from-top-2 duration-200">
-              <label className="block text-xs font-semibold text-slate-400 dark:text-slate-500 mb-2 uppercase tracking-wide">
-                الخطوة ٢ — اختر القسم
-              </label>
               <div className="relative">
                 <Building2 className="absolute top-1/2 -translate-y-1/2 right-3.5 h-4 w-4 text-slate-400 pointer-events-none" />
                 <select
