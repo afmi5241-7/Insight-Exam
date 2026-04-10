@@ -20,7 +20,6 @@ export default function Landing() {
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-[#0f172a] transition-colors duration-300">
       <Navbar />
-
       {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-to-br from-[#3b82f6] via-[#6366f1] to-[#8b5cf6] text-white py-24 sm:py-32">
         {/* Decorative blobs */}
@@ -32,7 +31,7 @@ export default function Landing() {
           <div className="flex justify-center mb-8">
             <div className="relative">
               <div className="absolute inset-0 bg-white/20 rounded-3xl blur-xl scale-110" />
-              <img src={logo} alt="Insight Exam" className="relative h-24 w-24 drop-shadow-2xl" />
+              <img src={logo} alt="Insight Exam" className="relative h-24 w-24 drop-shadow-2xl rounded-tl-[15px] rounded-tr-[15px] rounded-br-[15px] rounded-bl-[15px]" />
             </div>
           </div>
           <h1 className="text-5xl sm:text-7xl font-bold mb-5 leading-tight tracking-tight">
@@ -69,7 +68,6 @@ export default function Landing() {
           </svg>
         </div>
       </section>
-
       {/* How it works */}
       <section className="py-20 sm:py-24 bg-white dark:bg-[#0f172a]">
         <div className="max-w-5xl mx-auto px-4">
@@ -119,7 +117,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       {/* CTA cards */}
       <section className="py-20 sm:py-24 bg-[#f8fafc] dark:bg-[#1e293b]">
         <div className="max-w-4xl mx-auto px-4">
@@ -165,7 +162,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       {/* About */}
       <section id="about" className="py-20 sm:py-24 bg-white dark:bg-[#0f172a]">
         <div className="max-w-5xl mx-auto px-4">
@@ -197,7 +193,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       {/* FAQ */}
       <section id="faq" className="py-20 sm:py-24 bg-[#f8fafc] dark:bg-[#1e293b]">
         <div className="max-w-2xl mx-auto px-4">
@@ -231,7 +226,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
       {/* Contact */}
       <section id="contact" className="py-20 bg-white dark:bg-[#0f172a]">
         <div className="max-w-xl mx-auto px-4 text-center">
@@ -251,7 +245,6 @@ export default function Landing() {
           </a>
         </div>
       </section>
-
       <Footer />
     </div>
   );
