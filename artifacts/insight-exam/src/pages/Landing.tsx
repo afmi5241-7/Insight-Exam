@@ -21,7 +21,7 @@ export default function Landing() {
     <div className="min-h-screen flex flex-col bg-white dark:bg-[#0f172a] transition-colors duration-300">
       <Navbar />
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#3b82f6] via-[#6366f1] to-[#8b5cf6] text-white py-24 sm:py-32">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#6366f1] via-[#8b5cf6] to-[#a78bfa] dark:from-[#0f172a] dark:via-[#1e1b4b] dark:to-[#172554] text-white py-24 sm:py-32 transition-colors duration-500">
         {/* Decorative blobs */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-purple-400/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />

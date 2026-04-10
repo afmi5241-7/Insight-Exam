@@ -9,6 +9,7 @@ import SubmitQuestion from "@/pages/SubmitQuestion";
 import Browse from "@/pages/Browse";
 import Analytics from "@/pages/Analytics";
 import Admin from "@/pages/Admin";
+import ChapterAnalytics from "@/pages/ChapterAnalytics";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: false, staleTime: 30_000 } },
@@ -21,6 +22,7 @@ function Router() {
       <Route path="/submit" component={SubmitQuestion} />
       <Route path="/analytics" component={Browse} />
       <Route path="/analytics/:id" component={Analytics} />
+      <Route path="/analytics/:id/chapter/:chapter" component={ChapterAnalytics} />
       <Route path="/admin" component={Admin} />
       <Route component={NotFound} />
     </Switch>

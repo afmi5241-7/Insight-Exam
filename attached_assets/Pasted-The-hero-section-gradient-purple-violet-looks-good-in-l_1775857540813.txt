@@ -1,0 +1,130 @@
+The hero section gradient (purple/violet) looks good in light mode but is too bright and doesn't change in dark mode. Fix this:
+Light mode: Keep the current gradient but make it slightly softer: use linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%) — a softer indigo-to-violet gradient
+Dark mode: Switch the hero gradient to a deep dark version: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #172554 100%) — dark navy to deep indigo, very subtle and elegant. Text on it should be white/light gray.
+Make sure the transition between light and dark mode is smooth (use CSS transition on background). Apply this fix to ALL sections that have gradient backgrounds, not just the hero.
+
+
+
+Build the Analytics Section (قسم التحليلات — للمستفيد)
+When a user clicks "استعرض التحليلات" from the landing page, build the following experience:
+
+Entry Flow: Finding a Course
+Use a filtered dropdown approach (NOT just a search box):
+
+Step 1: User selects الكلية (College) from a dropdown
+Step 2: Based on selected college, show القسم (Department) dropdown — only departments belonging to that college
+Step 3: After selecting department, show all available courses in that department that have questions submitted. Display them as clickable cards showing: course name + total number of questions submitted. Also include a search/filter box above the cards so the user can type to filter if there are many courses.
+
+If a department has no courses with submitted questions yet, show a friendly message: "لا توجد مقررات مُدخلة حالياً في هذا القسم. كن أول من يساهم! 🎯"
+
+Global Stats Banner (إحصائيات المنصة)
+At the very top of the analytics page, BEFORE the college/department selection, show a horizontal banner with animated counters:
+
+📊 إجمالي الأسئلة المدخلة (Total questions submitted across all courses)
+📚 عدد المقررات (Total courses with questions)
+🏫 عدد الكليات المشاركة (Number of colleges that have courses)
+👥 عدد المساهمين (Total unique contributors — count by session/submission count)
+
+Style these as 4 cards in a row with large animated numbers that count up when the page loads. Use gradient backgrounds matching the site theme.
+
+Course-Level Dashboard (عند اختيار مقرر معين)
+When a user clicks on a course, show the course overview dashboard with:
+Top Summary Cards (4 cards in a row):
+
+إجمالي الأسئلة (Total questions for this course)
+عدد الفصول المغطاة (Number of chapters covered)
+نوع السؤال الأكثر شيوعاً (Most common question type)
+مستوى الصعوبة الغالب (Dominant difficulty level)
+
+Dashboard 3: أهمية كل فصل في الفاينل (Chapter Importance in Finals)
+
+Chart type: Horizontal bar chart (sorted from most to least)
+Shows how many FINAL exam questions came from each chapter
+Color: Use a blue gradient — darker = more questions
+Label each bar with the count and percentage
+Title: "تكرار الفصول في اختبارات الفاينل 📋"
+
+Dashboard 4: أهمية كل فصل في الميدات (Chapter Importance in Midterms)
+
+Chart type: Horizontal bar chart (same style as Dashboard 3)
+Shows how many MIDTERM (ميد 1 + ميد 2 combined) questions came from each chapter
+Color: Use a purple gradient
+Title: "تكرار الفصول في اختبارات الميد 📝"
+Optionally, use a grouped bar chart showing ميد 1 vs ميد 2 side by side for each chapter
+
+Chapter List
+Below the dashboards, show all chapters as clickable cards/accordion items. Each card shows:
+
+Chapter name
+Number of questions in that chapter
+A small colored badge showing difficulty distribution (e.g., "60% متوسط")
+Click to expand and see the chapter-level dashboards
+
+
+Chapter-Level Dashboard (عند اختيار فصل/تشابتر معين)
+When a user clicks on a specific chapter, show:
+Dashboard 1: توزيع مستوى الصعوبة (Difficulty Distribution)
+
+Chart type: Donut/Ring chart
+Shows: سهل (green) | متوسط (amber/yellow) | صعب (red)
+Center of donut shows the total question count
+Each segment shows the percentage
+Title: "مستوى صعوبة الأسئلة في هذا الفصل"
+
+Dashboard 2: تكرار الأسئلة في هذا الفصل (Question Frequency)
+
+Chart type: Vertical bar chart
+This counts how many questions belong to this chapter across different exam periods (2023 ميد1, 2023 ميد2, 2023 فاينل, 2024 ميد1, etc.)
+This shows HOW OFTEN this chapter appeared in exams over time
+Title: "تكرار ظهور هذا الفصل في الاختبارات عبر السنوات"
+Color: gradient bars
+
+Featured/Model Question Section (السؤال النموذجي ⭐️)
+Logic for selecting the model question:
+
+First priority: If the exact same question text appears multiple times (submitted by different people), show it as "سؤال متكرر — يُنصح بالتركيز عليه 🔥" with a badge showing how many times it was repeated
+Second priority: If no repeated question text exists, pick a question that matches the most common topic within this chapter
+Third priority: If neither above applies, show a random question from this chapter labeled as "سؤال نموذجي من هذا الفصل"
+
+Display the model question in a highlighted card with special styling (gradient border, star icon).
+Questions List
+Below the dashboards, show all approved questions for this chapter in a clean list/table:
+
+Question text (or image if uploaded)
+Question type badge (اختياري، صح وخطأ، etc.)
+Difficulty badge (color-coded: green/amber/red)
+Exam period (e.g., 2024 - فاينل)
+
+Resources Section (مصادر مفيدة 📚)
+If any questions in this chapter have a shared resource link, show a section called "مصادر لشرح هذا الفصل" with:
+
+All shared links organized as cards
+Auto-detect link type and show appropriate icon:
+
+YouTube links → 🎥 YouTube icon, red accent
+Telegram links → ✈️ Telegram icon, blue accent
+Other links → 🔗 Generic link icon
+
+
+Each card shows: Link title (or URL), who shared it (or "طالب مساهم"), and a clickable button "فتح المصدر"
+If no resources exist, show: "لا توجد مصادر حالياً. ساهم بإضافة رابط مفيد عند إدخال سؤال جديد! 💡"
+
+
+Design Requirements for ALL Dashboards:
+
+All charts must use Recharts library
+Colors must work perfectly in BOTH light mode and dark mode:
+
+Light mode: Use vibrant colors on white/light gray backgrounds
+Dark mode: Use slightly brighter/neon versions of the same colors on dark backgrounds
+Text labels, axis labels, and legends must automatically switch color based on mode
+
+
+Charts should have smooth entrance animations (fade in + slide up)
+All numbers should use Arabic numerals
+Tooltips on hover for all chart elements showing exact values
+Charts must be fully responsive (mobile-friendly)
+Use consistent border-radius (16px) for all chart containers
+Add subtle shadow to chart cards
+Legend text should be clear and readable, never overlapped by chart elements
+Use generous padding inside chart cards so nothing feels cramped

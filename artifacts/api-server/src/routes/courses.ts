@@ -1,8 +1,29 @@
 import { Router, type IRouter } from "express";
 import { db, coursesTable, questionsTable } from "@workspace/db";
-import { eq, and, count, ilike, sql } from "drizzle-orm";
+import { eq, and, count, ilike } from "drizzle-orm";
 
 const router: IRouter = Router();
+
+// ─── Faculties ────────────────────────────────────────────────────────────────
+
+router.get("/faculties", async (_req, res): Promise<void> => {
+  const rows = await db
+    .selectDistinct({ faculty: coursesTable.faculty })
+    .from(coursesTable)
+    .orderBy(coursesTable.faculty);
+  res.json(rows.map(r => r.faculty).filter(Boolean));
+});
+
+// ─── Departments ──────────────────────────────────────────────────────────────
+
+router.get("/departments", async (req, res): Promise<void> => {
+  const { faculty } = req.query as Record<string, string>;
+  const base = db.selectDistinct({ department: coursesTable.department }).from(coursesTable).orderBy(coursesTable.department);
+  const rows = faculty ? await base.where(eq(coursesTable.faculty, faculty)) : await base;
+  res.json(rows.map(r => r.department).filter(Boolean));
+});
+
+// ─── Courses ──────────────────────────────────────────────────────────────────
 
 router.get("/courses", async (req, res): Promise<void> => {
   const { faculty, department, name } = req.query as Record<string, string>;
@@ -27,7 +48,7 @@ router.get("/courses", async (req, res): Promise<void> => {
 
   const conditions = [];
   if (faculty) conditions.push(eq(coursesTable.faculty, faculty));
-  if (department) conditions.push(ilike(coursesTable.department, `%${department}%`));
+  if (department) conditions.push(eq(coursesTable.department, department));
   if (name) conditions.push(ilike(coursesTable.name, `%${name}%`));
   if (conditions.length > 0) query = query.where(and(...conditions));
 
