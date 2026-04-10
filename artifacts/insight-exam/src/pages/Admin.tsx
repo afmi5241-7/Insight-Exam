@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { CheckCircle2, XCircle, Clock, Shield, LogOut, RefreshCw } from "lucide-react";
-import logo from "@assets/insight_exam_logo_1_1775630424807.png";
+import logo from "@assets/insight_exam_logo_1775829320780.png";
 import { useDarkMode } from "@/lib/dark-mode";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");

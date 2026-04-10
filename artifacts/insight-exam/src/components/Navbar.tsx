@@ -4,7 +4,7 @@ import { useLogout, getGetMeQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { PlusCircle, LogOut, Menu, X, BarChart2, Sun, Moon } from "lucide-react";
 import { useState } from "react";
-import logo from "@assets/insight_exam_logo_1_1775630424807.png";
+import logo from "@assets/insight_exam_logo_1775829320780.png";
 import { useDarkMode } from "@/lib/dark-mode";
 
 export default function Navbar() {

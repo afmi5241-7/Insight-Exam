@@ -3,7 +3,7 @@ import { Link, useLocation } from "wouter";
 import { useLogin, getGetMeQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Mail, Lock, Sun, Moon } from "lucide-react";
-import logo from "@assets/insight_exam_logo_1_1775630424807.png";
+import logo from "@assets/insight_exam_logo_1775829320780.png";
 import { useDarkMode } from "@/lib/dark-mode";
 
 export default function Login() {

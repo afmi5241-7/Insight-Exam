@@ -1,7 +1,7 @@
 import { Link } from "wouter";
 import { Brain, Target, TrendingUp, ArrowLeft, Sun, Moon } from "lucide-react";
 import Footer from "@/components/Footer";
-import logo from "@assets/insight_exam_logo_1_1775630424807.png";
+import logo from "@assets/insight_exam_logo_1775829320780.png";
 import { useDarkMode } from "@/lib/dark-mode";
 
 export default function Landing() {
