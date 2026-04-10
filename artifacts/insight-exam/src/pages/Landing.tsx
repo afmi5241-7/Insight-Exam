@@ -106,9 +106,6 @@ export default function Landing() {
               },
             ].map((step, i) => (
               <div key={i} className="group relative bg-white dark:bg-[#0f2240] rounded-2xl p-8 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-slate-100 dark:border-[#1a3a6a]/40">
-                <div className="absolute top-5 left-5 text-7xl font-black text-slate-50 dark:text-[#0a1628] select-none leading-none">
-                  {step.num}
-                </div>
                 <div className={`relative w-14 h-14 bg-gradient-to-br ${step.gradient} rounded-2xl flex items-center justify-center mb-5 shadow-lg`}>
                   {step.icon}
                 </div>
