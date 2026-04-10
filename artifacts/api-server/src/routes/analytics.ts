@@ -1,6 +1,6 @@
 import { Router, type IRouter } from "express";
 import { db, questionsTable, coursesTable } from "@workspace/db";
-import { eq, and, count } from "drizzle-orm";
+import { eq, and, count, ne } from "drizzle-orm";
 import { GetCourseAnalyticsParams } from "@workspace/api-zod";
 
 const router: IRouter = Router();
@@ -38,7 +38,7 @@ router.get("/courses/:id/analytics", async (req, res): Promise<void> => {
   const questions = await db
     .select()
     .from(questionsTable)
-    .where(eq(questionsTable.courseId, params.data.id));
+    .where(and(eq(questionsTable.courseId, params.data.id), eq(questionsTable.status, "approved")));
 
   const totalQuestions = questions.length;
 
@@ -163,7 +163,10 @@ router.get("/dashboard/summary", async (req, res): Promise<void> => {
       questionCount: count(questionsTable.id),
     })
     .from(coursesTable)
-    .leftJoin(questionsTable, eq(questionsTable.courseId, coursesTable.id))
+    .leftJoin(
+      questionsTable,
+      and(eq(questionsTable.courseId, coursesTable.id), eq(questionsTable.status, "approved"))
+    )
     .where(eq(coursesTable.userId, userId))
     .groupBy(coursesTable.id)
     .orderBy(coursesTable.createdAt);

@@ -11,6 +11,7 @@ export const questionsTable = pgTable("questions", {
   questionType: text("question_type").notNull(),
   difficulty: text("difficulty").notNull(),
   examPeriod: text("exam_period").notNull(),
+  status: text("status").notNull().default("pending"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 

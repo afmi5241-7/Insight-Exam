@@ -27,36 +27,35 @@ export default function NewCourse() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
+    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-[#0f172a] transition-colors duration-300">
       <Navbar />
       <main className="flex-1 max-w-2xl mx-auto w-full px-4 sm:px-6 py-8">
-        {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm text-slate-500 mb-6">
+        <div className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400 mb-6">
           <Link href="/dashboard" className="hover:text-blue-600 transition-colors">لوحة التحكم</Link>
           <ChevronRight className="h-4 w-4 rotate-180" />
-          <span className="text-slate-800">إضافة مقرر جديد</span>
+          <span className="text-slate-800 dark:text-slate-200">إضافة مقرر جديد</span>
         </div>
 
-        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
+        <div className="bg-white dark:bg-[#1e293b] rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm p-8 transition-colors duration-300">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
               <BookOpen className="h-6 w-6 text-blue-600" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-slate-800">إضافة مقرر جديد</h1>
-              <p className="text-slate-500 text-sm">أدخل بيانات المقرر الدراسي</p>
+              <h1 className="text-xl font-bold text-slate-800 dark:text-slate-100">إضافة مقرر جديد</h1>
+              <p className="text-slate-500 dark:text-slate-400 text-sm">أدخل بيانات المقرر الدراسي</p>
             </div>
           </div>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg px-4 py-3 mb-6">
+            <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 text-sm rounded-lg px-4 py-3 mb-6">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                 اسم المقرر <span className="text-red-500">*</span>
               </label>
               <input
@@ -65,12 +64,12 @@ export default function NewCourse() {
                 onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
                 placeholder="مثال: هياكل البيانات والخوارزميات"
                 required
-                className="w-full border border-slate-200 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border border-slate-200 dark:border-slate-600 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-slate-700 dark:text-slate-100 dark:placeholder-slate-400"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                 رمز المقرر <span className="text-red-500">*</span>
               </label>
               <input
@@ -79,13 +78,13 @@ export default function NewCourse() {
                 onChange={e => setForm(f => ({ ...f, code: e.target.value }))}
                 placeholder="مثال: CS301"
                 required
-                className="w-full border border-slate-200 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border border-slate-200 dark:border-slate-600 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-slate-700 dark:text-slate-100 dark:placeholder-slate-400"
                 dir="ltr"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
                 اسم الأستاذ <span className="text-red-500">*</span>
               </label>
               <input
@@ -94,7 +93,7 @@ export default function NewCourse() {
                 onChange={e => setForm(f => ({ ...f, professor: e.target.value }))}
                 placeholder="مثال: د. محمد الشهراني"
                 required
-                className="w-full border border-slate-200 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full border border-slate-200 dark:border-slate-600 rounded-lg py-3 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-slate-700 dark:text-slate-100 dark:placeholder-slate-400"
               />
             </div>
 
@@ -108,7 +107,7 @@ export default function NewCourse() {
               </button>
               <Link
                 href="/dashboard"
-                className="px-6 py-3 border border-slate-200 text-slate-600 rounded-lg hover:bg-slate-50 transition-colors text-sm font-medium"
+                className="px-6 py-3 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors text-sm font-medium"
               >
                 إلغاء
               </Link>

@@ -1,13 +1,16 @@
 import { Link } from "wouter";
-import { Brain, Target, TrendingUp, ArrowLeft } from "lucide-react";
+import { Brain, Target, TrendingUp, ArrowLeft, Sun, Moon } from "lucide-react";
 import Footer from "@/components/Footer";
 import logo from "@assets/insight_exam_logo_1_1775630424807.png";
+import { useDarkMode } from "@/lib/dark-mode";
 
 export default function Landing() {
+  const { dark, toggle } = useDarkMode();
+
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-[#0f172a] transition-colors duration-300">
       {/* Navbar */}
-      <nav className="bg-white border-b border-slate-200">
+      <nav className="bg-white dark:bg-[#1e293b] border-b border-slate-200 dark:border-slate-700 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-2 text-blue-600 font-bold text-xl">
@@ -15,7 +18,13 @@ export default function Landing() {
               <span>Insight Exam</span>
             </div>
             <div className="flex items-center gap-4">
-              <Link href="/login" className="text-slate-600 hover:text-blue-600 font-medium text-sm transition-colors">
+              <button
+                onClick={toggle}
+                className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+              >
+                {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              </button>
+              <Link href="/login" className="text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium text-sm transition-colors">
                 تسجيل الدخول
               </Link>
               <Link
@@ -56,9 +65,9 @@ export default function Landing() {
       </section>
 
       {/* Steps */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white dark:bg-[#0f172a] transition-colors duration-300">
         <div className="max-w-5xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center text-slate-800 mb-12">
+          <h2 className="text-3xl font-bold text-center text-slate-800 dark:text-slate-100 mb-12">
             كيف يعمل Insight Exam؟
           </h2>
           <div className="grid md:grid-cols-3 gap-8">
@@ -85,9 +94,9 @@ export default function Landing() {
       </section>
 
       {/* Features */}
-      <section className="py-20 bg-slate-50">
+      <section className="py-20 bg-slate-50 dark:bg-[#1e293b] transition-colors duration-300">
         <div className="max-w-5xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center text-slate-800 mb-12">
+          <h2 className="text-3xl font-bold text-center text-slate-800 dark:text-slate-100 mb-12">
             ما الذي ستحصل عليه؟
           </h2>
           <div className="grid md:grid-cols-2 gap-6">
@@ -97,10 +106,10 @@ export default function Landing() {
               { title: "مستوى الصعوبة", desc: "وزّع وقتك بين الأسئلة السهلة والمتوسطة والصعبة بذكاء" },
               { title: "توصيات مراجعة ذكية", desc: "اقتراحات مبنية على البيانات لتحسين أداؤك في الاختبار" },
             ].map((f) => (
-              <div key={f.title} className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+              <div key={f.title} className="bg-white dark:bg-[#0f172a] p-6 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm transition-colors duration-300">
                 <div className="w-2 h-2 rounded-full bg-blue-600 mb-3" />
-                <h3 className="font-bold text-slate-800 mb-2">{f.title}</h3>
-                <p className="text-slate-500 text-sm">{f.desc}</p>
+                <h3 className="font-bold text-slate-800 dark:text-slate-100 mb-2">{f.title}</h3>
+                <p className="text-slate-500 dark:text-slate-400 text-sm">{f.desc}</p>
               </div>
             ))}
           </div>
@@ -133,17 +142,17 @@ function StepCard({ number, icon, title, description }: {
   description: string;
 }) {
   return (
-    <div className="text-center p-6 rounded-xl border border-slate-200 hover:border-blue-200 hover:shadow-md transition-all">
+    <div className="text-center p-6 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-blue-200 dark:hover:border-blue-600 hover:shadow-md transition-all dark:bg-[#1e293b]">
       <div className="relative inline-block mb-4">
-        <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto">
+        <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center mx-auto">
           {icon}
         </div>
         <span className="absolute -top-2 -left-2 w-6 h-6 bg-blue-600 text-white text-xs font-bold rounded-full flex items-center justify-center">
           {number}
         </span>
       </div>
-      <h3 className="font-bold text-xl text-slate-800 mb-2">{title}</h3>
-      <p className="text-slate-500 text-sm leading-relaxed">{description}</p>
+      <h3 className="font-bold text-xl text-slate-800 dark:text-slate-100 mb-2">{title}</h3>
+      <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{description}</p>
     </div>
   );
 }

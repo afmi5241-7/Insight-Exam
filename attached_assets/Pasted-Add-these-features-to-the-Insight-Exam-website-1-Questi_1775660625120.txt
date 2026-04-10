@@ -1,0 +1,59 @@
+Add these features to the Insight Exam website:
+1. Question Moderation System (نظام مراجعة الأسئلة)
+When a user submits a question, it should NOT appear in the dashboard immediately. Instead:
+
+After submitting, show the user a status message: "تم إرسال السؤال وهو قيد المراجعة ✅"
+Each question gets a status field in the database: pending | approved | rejected
+All new questions default to pending
+Only approved questions appear in the dashboard analytics and charts
+Create a simple Admin Panel page at the route /admin (protected with a simple hardcoded password, not full auth — just a password prompt when visiting the page). The admin panel should show:
+
+A list of all pending questions with full details (question text, chapter, type, difficulty, course name)
+Two buttons per question: "قبول ✅" (approve) and "رفض ❌" (reject)
+A filter to switch between: قيد المراجعة | مقبولة | مرفوضة
+Show a counter: "لديك X سؤال بانتظار المراجعة"
+
+
+
+2. Email Notification for New Questions (إشعار بالإيميل)
+When any user submits a new question, send an email notification to the admin:
+
+Send to: admin@insightexam.com (this is a custom domain email — I will purchase the domain and set up the email later, so just configure the email sending functionality with this address as a placeholder)
+Email subject: "سؤال جديد بانتظار المراجعة — Insight Exam"
+Email body should include:
+
+Course name and code
+The question text
+Chapter, type, and difficulty
+A direct link to the admin panel: /admin
+
+
+Use Nodemailer with SMTP configuration. Set the SMTP credentials as environment variables (SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS) so I can configure them later with my email provider
+Add a note in the code comments explaining where to set the SMTP credentials
+
+3. Dark Mode Toggle (الوضع الليلي)
+Add a dark/light mode toggle to the website:
+
+Place a toggle button (sun/moon icon) in the navbar next to the logo
+Default to light mode
+Save the user's preference in localStorage so it persists across visits
+Dark mode colors:
+
+Background: #0f172a (dark navy)
+Cards/surfaces: #1e293b
+Text: #f1f5f9 (light gray)
+Primary blue stays: #2563EB
+Charts and graphs should also adapt to dark mode colors
+
+
+Smooth transition animation when switching modes
+Make sure ALL pages support dark mode properly including the dashboard, admin panel, and forms
+
+4. Question Status Tracking for Users (تتبع حالة السؤال)
+On the "Add Questions" page, after the form, show a section called "أسئلتك المرسلة" that displays the questions submitted in the current session with their status:
+
+🟡 قيد المراجعة (pending)
+🟢 تم القبول (approved)
+🔴 مرفوض (rejected)
+
+This way the user can see what happened to their submitted questions.

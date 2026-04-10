@@ -6,6 +6,7 @@ import {
   AddQuestionParams,
   GetCourseQuestionsParams,
 } from "@workspace/api-zod";
+import { sendNewQuestionNotification } from "../lib/email";
 
 const router: IRouter = Router();
 
@@ -53,6 +54,7 @@ router.get("/courses/:id/questions", async (req, res): Promise<void> => {
     questionType: q.questionType,
     difficulty: q.difficulty,
     examPeriod: q.examPeriod,
+    status: q.status,
     createdAt: q.createdAt,
   })));
 });
@@ -93,8 +95,20 @@ router.post("/courses/:id/questions", async (req, res): Promise<void> => {
       questionType: parsed.data.questionType,
       difficulty: parsed.data.difficulty,
       examPeriod: parsed.data.examPeriod,
+      status: "pending",
     })
     .returning();
+
+  // Send admin email notification (non-blocking)
+  sendNewQuestionNotification({
+    text: question.text,
+    chapter: question.chapter,
+    questionType: question.questionType,
+    difficulty: question.difficulty,
+    examPeriod: question.examPeriod,
+    courseName: course.name,
+    courseCode: course.code,
+  }).catch(() => {});
 
   res.status(201).json({
     id: question.id,
@@ -104,6 +118,7 @@ router.post("/courses/:id/questions", async (req, res): Promise<void> => {
     questionType: question.questionType,
     difficulty: question.difficulty,
     examPeriod: question.examPeriod,
+    status: question.status,
     createdAt: question.createdAt,
   });
 });
