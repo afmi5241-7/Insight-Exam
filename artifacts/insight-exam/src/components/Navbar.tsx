@@ -14,7 +14,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2.5 group">
-            <img src={logo} alt="Insight Exam" className="h-9 w-9 transition-transform duration-200 group-hover:scale-105" />
+            <img src={logo} alt="Insight Exam" className="h-9 w-9 transition-transform duration-200 group-hover:scale-105 rounded-tl-[5px] rounded-tr-[5px] rounded-br-[5px] rounded-bl-[5px]" />
             <span className="hidden sm:inline font-bold text-[#0f172a] dark:text-white text-lg tracking-tight">Insight Exam</span>
           </Link>
 
