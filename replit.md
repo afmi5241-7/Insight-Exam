@@ -17,7 +17,8 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 - **Build**: esbuild (CJS bundle)
 - **Auth**: Session-based via express-session + bcryptjs
 - **Frontend**: React + Vite + Tailwind CSS + Recharts
-- **Font**: Tajawal (Arabic font from Google Fonts)
+- **Font**: IBM Plex Sans Arabic (Google Fonts)
+- **Color palette**: Deep blue `#1a4b8c`, Mid blue `#2d6cc0`, Light blue `#4a9eed`, Cyan glow `#7ec8f0`. Light mode bg `#f0f6ff`, Dark mode bg `#0a1628`/`#0f2240`. Zero purple/violet — all blues.
 - **Layout**: Fully RTL (Right-to-Left) Arabic
 
 ## Applications
