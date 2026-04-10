@@ -1,8 +1,7 @@
 import { Link } from "wouter";
-import { PenLine, BarChart2, Upload, TrendingUp, BookOpen, ChevronDown, ChevronUp, Mail, ArrowLeft } from "lucide-react";
+import { PenLine, BarChart2, Upload, TrendingUp, BookOpen, ChevronDown, ChevronUp, Mail, ArrowLeft, Shield, Users, Zap } from "lucide-react";
 import Footer from "@/components/Footer";
 import { useState } from "react";
-import { useDarkMode } from "@/lib/dark-mode";
 import Navbar from "@/components/Navbar";
 
 const logo = "/logo.png";
@@ -23,79 +22,98 @@ export default function Landing() {
       <Navbar />
 
       {/* Hero */}
-      <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 text-white py-20 sm:py-28">
-        <div className="max-w-4xl mx-auto px-4 text-center">
-          <div className="flex justify-center mb-6">
-            <img src={logo} alt="Insight Exam" className="h-24 w-24 drop-shadow-2xl" />
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#3b82f6] via-[#6366f1] to-[#8b5cf6] text-white py-24 sm:py-32">
+        {/* Decorative blobs */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-purple-400/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4" />
+        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-blue-300/10 rounded-full blur-2xl -translate-x-1/2 -translate-y-1/2" />
+
+        <div className="relative max-w-4xl mx-auto px-4 text-center">
+          <div className="flex justify-center mb-8">
+            <div className="relative">
+              <div className="absolute inset-0 bg-white/20 rounded-3xl blur-xl scale-110" />
+              <img src={logo} alt="Insight Exam" className="relative h-24 w-24 drop-shadow-2xl" />
+            </div>
           </div>
-          <h1 className="text-4xl sm:text-6xl font-black mb-4 leading-tight">
+          <h1 className="text-5xl sm:text-7xl font-bold mb-5 leading-tight tracking-tight">
             Insight Exam
           </h1>
-          <p className="text-2xl sm:text-3xl font-bold text-blue-100 mb-4">
+          <p className="text-2xl sm:text-3xl font-semibold text-blue-100 mb-5">
             حوّل مراجعتك من عشوائية إلى ذكية
           </p>
-          <p className="text-blue-200 text-base sm:text-lg mb-10 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-blue-200 text-base sm:text-lg mb-12 max-w-2xl mx-auto leading-relaxed">
             أدخل أسئلة الاختبارات السابقة واكتشف الأنماط المتكررة — ركّز وقتك على ما يهم فعلاً
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               href="/submit"
-              className="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-400 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+              className="group flex items-center justify-center gap-2 bg-white text-[#3b82f6] px-8 py-4 rounded-full font-bold text-lg transition-all shadow-xl hover:shadow-2xl hover:-translate-y-1 hover:bg-blue-50"
             >
-              <PenLine className="h-5 w-5" />
+              <PenLine className="h-5 w-5 transition-transform group-hover:rotate-6" />
               إدخال الأسئلة
             </Link>
             <Link
               href="/analytics"
-              className="flex items-center justify-center gap-2 bg-white text-blue-700 hover:bg-blue-50 px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+              className="group flex items-center justify-center gap-2 bg-white/15 backdrop-blur-sm border border-white/30 text-white hover:bg-white/25 px-8 py-4 rounded-full font-bold text-lg transition-all hover:-translate-y-1 hover:shadow-xl"
             >
               <BarChart2 className="h-5 w-5" />
               استعرض التحليلات
             </Link>
           </div>
         </div>
+
+        {/* Wave separator */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" className="w-full h-16 sm:h-20">
+            <path d="M0 80L48 70C96 60 192 40 288 33.3C384 27 480 33 576 43.3C672 53 768 67 864 66.7C960 67 1056 53 1152 43.3C1248 33 1344 27 1392 23.3L1440 20V80H0Z" className="fill-white dark:fill-[#0f172a]" />
+          </svg>
+        </div>
       </section>
 
       {/* How it works */}
-      <section className="py-16 sm:py-20 bg-slate-50 dark:bg-[#0f172a]">
+      <section className="py-20 sm:py-24 bg-white dark:bg-[#0f172a]">
         <div className="max-w-5xl mx-auto px-4">
-          <h2 className="text-2xl sm:text-3xl font-black text-center text-slate-800 dark:text-slate-100 mb-3">
-            كيف يعمل؟
-          </h2>
-          <p className="text-center text-slate-500 dark:text-slate-400 mb-12">ثلاث خطوات بسيطة</p>
-          <div className="grid sm:grid-cols-3 gap-6">
+          <div className="text-center mb-16">
+            <span className="inline-block bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
+              كيف يعمل؟
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#0f172a] dark:text-white mb-3">
+              ثلاث خطوات بسيطة
+            </h2>
+          </div>
+          <div className="grid sm:grid-cols-3 gap-8">
             {[
               {
                 num: "١",
-                icon: <Upload className="h-7 w-7 text-blue-600" />,
+                icon: <Upload className="h-7 w-7 text-white" />,
+                gradient: "from-[#3b82f6] to-[#6366f1]",
                 title: "أدخل الأسئلة",
                 desc: "شارك أسئلة الاختبارات السابقة للمقررات الدراسية — اكتابةً أو بصورة",
-                color: "bg-blue-50 dark:bg-blue-900/20 border-blue-100 dark:border-blue-800",
               },
               {
                 num: "٢",
-                icon: <BookOpen className="h-7 w-7 text-purple-600" />,
+                icon: <BookOpen className="h-7 w-7 text-white" />,
+                gradient: "from-[#6366f1] to-[#8b5cf6]",
                 title: "تُراجع الأسئلة",
                 desc: "يراجع فريقنا كل سؤال للتحقق من جودته قبل إضافته للتحليلات",
-                color: "bg-purple-50 dark:bg-purple-900/20 border-purple-100 dark:border-purple-800",
               },
               {
                 num: "٣",
-                icon: <TrendingUp className="h-7 w-7 text-green-600" />,
+                icon: <TrendingUp className="h-7 w-7 text-white" />,
+                gradient: "from-[#8b5cf6] to-[#a855f7]",
                 title: "احصل على التحليلات",
                 desc: "اكتشف الفصول الأكثر تكراراً وأنواع الأسئلة والتوصيات الذكية للمراجعة",
-                color: "bg-green-50 dark:bg-green-900/20 border-green-100 dark:border-green-800",
               },
             ].map((step, i) => (
-              <div key={i} className={`rounded-2xl border p-6 ${step.color} transition-colors duration-300`}>
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center shadow-sm">
-                    {step.icon}
-                  </div>
-                  <span className="text-2xl font-black text-slate-300 dark:text-slate-600">{step.num}</span>
+              <div key={i} className="group relative bg-white dark:bg-[#1e293b] rounded-2xl p-8 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-slate-100 dark:border-slate-700">
+                <div className="absolute top-5 left-5 text-7xl font-black text-slate-50 dark:text-slate-800 select-none leading-none">
+                  {step.num}
                 </div>
-                <h3 className="text-lg font-bold text-slate-800 dark:text-slate-100 mb-2">{step.title}</h3>
-                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">{step.desc}</p>
+                <div className={`relative w-14 h-14 bg-gradient-to-br ${step.gradient} rounded-2xl flex items-center justify-center mb-5 shadow-lg`}>
+                  {step.icon}
+                </div>
+                <h3 className="relative text-lg font-bold text-[#0f172a] dark:text-white mb-3">{step.title}</h3>
+                <p className="relative text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{step.desc}</p>
               </div>
             ))}
           </div>
@@ -103,22 +121,25 @@ export default function Landing() {
       </section>
 
       {/* CTA cards */}
-      <section className="py-16 sm:py-20 bg-white dark:bg-[#1e293b]">
+      <section className="py-20 sm:py-24 bg-[#f8fafc] dark:bg-[#1e293b]">
         <div className="max-w-4xl mx-auto px-4">
-          <h2 className="text-2xl sm:text-3xl font-black text-center text-slate-800 dark:text-slate-100 mb-12">
-            ماذا تريد أن تفعل؟
-          </h2>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#0f172a] dark:text-white">
+              ماذا تريد أن تفعل؟
+            </h2>
+          </div>
           <div className="grid sm:grid-cols-2 gap-6">
             <Link href="/submit" className="group block">
-              <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-2 border-green-200 dark:border-green-800 rounded-2xl p-8 hover:border-green-400 dark:hover:border-green-600 hover:shadow-lg transition-all duration-200">
-                <div className="w-14 h-14 bg-green-100 dark:bg-green-900/40 rounded-2xl flex items-center justify-center mb-4">
-                  <PenLine className="h-7 w-7 text-green-600 dark:text-green-400" />
+              <div className="relative bg-white dark:bg-[#0f172a] rounded-2xl p-8 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-slate-100 dark:border-slate-700 overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-400 to-green-500" />
+                <div className="w-14 h-14 bg-gradient-to-br from-emerald-400 to-green-500 rounded-2xl flex items-center justify-center mb-5 shadow-lg shadow-green-500/25">
+                  <PenLine className="h-7 w-7 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">إدخال الأسئلة</h3>
-                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4">
+                <h3 className="text-xl font-bold text-[#0f172a] dark:text-white mb-3">إدخال الأسئلة</h3>
+                <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-5">
                   ساعد زملاءك بمشاركة أسئلة الاختبارات السابقة. كلما أضفنا، كلما استفدنا جميعاً
                 </p>
-                <span className="flex items-center gap-1 text-green-600 dark:text-green-400 font-medium text-sm group-hover:gap-2 transition-all">
+                <span className="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold text-sm group-hover:gap-3 transition-all">
                   ابدأ الآن
                   <ArrowLeft className="h-4 w-4" />
                 </span>
@@ -126,15 +147,16 @@ export default function Landing() {
             </Link>
 
             <Link href="/analytics" className="group block">
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-2 border-blue-200 dark:border-blue-800 rounded-2xl p-8 hover:border-blue-400 dark:hover:border-blue-600 hover:shadow-lg transition-all duration-200">
-                <div className="w-14 h-14 bg-blue-100 dark:bg-blue-900/40 rounded-2xl flex items-center justify-center mb-4">
-                  <BarChart2 className="h-7 w-7 text-blue-600 dark:text-blue-400" />
+              <div className="relative bg-white dark:bg-[#0f172a] rounded-2xl p-8 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-slate-100 dark:border-slate-700 overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#3b82f6] to-[#6366f1]" />
+                <div className="w-14 h-14 bg-gradient-to-br from-[#3b82f6] to-[#6366f1] rounded-2xl flex items-center justify-center mb-5 shadow-lg shadow-blue-500/25">
+                  <BarChart2 className="h-7 w-7 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">استعرض التحليلات</h3>
-                <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4">
+                <h3 className="text-xl font-bold text-[#0f172a] dark:text-white mb-3">استعرض التحليلات</h3>
+                <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-5">
                   اعرف أي الفصول والمواضيع الأكثر تكراراً في اختباراتك واستفد من توصيات المراجعة
                 </p>
-                <span className="flex items-center gap-1 text-blue-600 dark:text-blue-400 font-medium text-sm group-hover:gap-2 transition-all">
+                <span className="inline-flex items-center gap-1.5 text-[#3b82f6] dark:text-blue-400 font-semibold text-sm group-hover:gap-3 transition-all">
                   اكتشف الآن
                   <ArrowLeft className="h-4 w-4" />
                 </span>
@@ -145,21 +167,31 @@ export default function Landing() {
       </section>
 
       {/* About */}
-      <section id="about" className="py-16 sm:py-20 bg-slate-50 dark:bg-[#0f172a]">
-        <div className="max-w-3xl mx-auto px-4 text-center">
-          <h2 className="text-2xl sm:text-3xl font-black text-slate-800 dark:text-slate-100 mb-4">عن المنصة</h2>
-          <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-base sm:text-lg mb-6">
-            Insight Exam منصة تعليمية جماعية للطلاب الجامعيين. فكرتها بسيطة: عندما يشارك الطلاب أسئلة الاختبارات السابقة، تستطيع الخوارزميات اكتشاف الأنماط وتحديد المواضيع الأكثر تكراراً — مما يساعد الجميع على التركيز في مراجعتهم بدلاً من المراجعة العشوائية.
-          </p>
-          <div className="grid sm:grid-cols-3 gap-4 text-center">
+      <section id="about" className="py-20 sm:py-24 bg-white dark:bg-[#0f172a]">
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="text-center mb-12">
+            <span className="inline-block bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
+              عن المنصة
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#0f172a] dark:text-white mb-4">
+              ذكاء جماعي لصالح الجميع
+            </h2>
+            <p className="text-slate-500 dark:text-slate-400 leading-relaxed text-base sm:text-lg max-w-2xl mx-auto">
+              Insight Exam منصة تعليمية جماعية للطلاب الجامعيين. عندما يشارك الطلاب أسئلة الاختبارات السابقة، تكتشف الخوارزميات الأنماط وتحدد المواضيع الأكثر تكراراً — مما يساعد الجميع على التركيز في مراجعتهم بدلاً من المراجعة العشوائية.
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-3 gap-6">
             {[
-              { label: "مجهول تماماً", desc: "لا حسابات، لا بيانات شخصية" },
-              { label: "ذكاء جماعي", desc: "كلما شارك الجميع، استفاد الجميع" },
-              { label: "تحليلات دقيقة", desc: "رسوم بيانية وتوصيات مخصصة" },
+              { icon: <Shield className="h-6 w-6 text-blue-600 dark:text-blue-400" />, label: "مجهول تماماً", desc: "لا حسابات، لا بيانات شخصية", bg: "bg-blue-50 dark:bg-blue-900/20" },
+              { icon: <Users className="h-6 w-6 text-purple-600 dark:text-purple-400" />, label: "ذكاء جماعي", desc: "كلما شارك الجميع، استفاد الجميع", bg: "bg-purple-50 dark:bg-purple-900/20" },
+              { icon: <Zap className="h-6 w-6 text-amber-600 dark:text-amber-400" />, label: "تحليلات دقيقة", desc: "رسوم بيانية وتوصيات مخصصة", bg: "bg-amber-50 dark:bg-amber-900/20" },
             ].map((item, i) => (
-              <div key={i} className="bg-white dark:bg-[#1e293b] rounded-xl p-5 border border-slate-200 dark:border-slate-700">
-                <p className="font-bold text-slate-800 dark:text-slate-100 mb-1">{item.label}</p>
-                <p className="text-sm text-slate-500 dark:text-slate-400">{item.desc}</p>
+              <div key={i} className="bg-white dark:bg-[#1e293b] rounded-2xl p-7 border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition-all duration-200">
+                <div className={`w-12 h-12 ${item.bg} rounded-xl flex items-center justify-center mb-4`}>
+                  {item.icon}
+                </div>
+                <p className="font-bold text-[#0f172a] dark:text-white mb-1.5">{item.label}</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -167,28 +199,31 @@ export default function Landing() {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="py-16 sm:py-20 bg-white dark:bg-[#1e293b]">
+      <section id="faq" className="py-20 sm:py-24 bg-[#f8fafc] dark:bg-[#1e293b]">
         <div className="max-w-2xl mx-auto px-4">
-          <h2 className="text-2xl sm:text-3xl font-black text-center text-slate-800 dark:text-slate-100 mb-10">
-            الأسئلة الشائعة
-          </h2>
+          <div className="text-center mb-12">
+            <span className="inline-block bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
+              الأسئلة الشائعة
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#0f172a] dark:text-white">
+              هل لديك سؤال؟
+            </h2>
+          </div>
           <div className="space-y-3">
             {FAQS.map((faq, i) => (
-              <div key={i} className="border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden transition-colors duration-300">
+              <div key={i} className={`bg-white dark:bg-[#0f172a] rounded-2xl border transition-all duration-200 overflow-hidden ${openFaq === i ? "border-blue-200 dark:border-blue-700 shadow-sm" : "border-slate-100 dark:border-slate-800"}`}>
                 <button
                   onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  className="w-full flex items-center justify-between px-5 py-4 text-right bg-white dark:bg-[#1e293b] hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                  className="w-full flex items-center justify-between px-6 py-5 text-right hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
                 >
-                  <span className="font-medium text-slate-800 dark:text-slate-100 text-sm">{faq.q}</span>
-                  {openFaq === i ? (
-                    <ChevronUp className="h-4 w-4 text-slate-400 flex-shrink-0 mr-3" />
-                  ) : (
-                    <ChevronDown className="h-4 w-4 text-slate-400 flex-shrink-0 mr-3" />
-                  )}
+                  <span className="font-semibold text-[#1e293b] dark:text-slate-100 text-sm">{faq.q}</span>
+                  <span className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mr-3 transition-colors ${openFaq === i ? "bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400" : "bg-slate-100 dark:bg-slate-800 text-slate-400"}`}>
+                    {openFaq === i ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                  </span>
                 </button>
                 {openFaq === i && (
-                  <div className="px-5 pb-4 bg-slate-50 dark:bg-slate-800/50">
-                    <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">{faq.a}</p>
+                  <div className="px-6 pb-5">
+                    <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{faq.a}</p>
                   </div>
                 )}
               </div>
@@ -198,15 +233,18 @@ export default function Landing() {
       </section>
 
       {/* Contact */}
-      <section id="contact" className="py-16 bg-slate-50 dark:bg-[#0f172a]">
+      <section id="contact" className="py-20 bg-white dark:bg-[#0f172a]">
         <div className="max-w-xl mx-auto px-4 text-center">
-          <h2 className="text-2xl font-black text-slate-800 dark:text-slate-100 mb-3">تواصل معنا</h2>
-          <p className="text-slate-500 dark:text-slate-400 mb-6 text-sm">
+          <div className="w-14 h-14 bg-gradient-to-br from-[#3b82f6] to-[#6366f1] rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-500/25">
+            <Mail className="h-7 w-7 text-white" />
+          </div>
+          <h2 className="text-3xl font-bold text-[#0f172a] dark:text-white mb-3">تواصل معنا</h2>
+          <p className="text-slate-500 dark:text-slate-400 mb-8 text-sm leading-relaxed">
             هل لديك اقتراح أو مشكلة؟ نسعد بسماعك
           </p>
           <a
             href="mailto:admin@insightexam.com"
-            className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-blue-700 transition-colors"
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-[#3b82f6] to-[#6366f1] text-white px-8 py-3.5 rounded-full font-semibold hover:shadow-lg hover:shadow-blue-500/25 hover:-translate-y-0.5 transition-all duration-200"
           >
             <Mail className="h-4 w-4" />
             admin@insightexam.com
