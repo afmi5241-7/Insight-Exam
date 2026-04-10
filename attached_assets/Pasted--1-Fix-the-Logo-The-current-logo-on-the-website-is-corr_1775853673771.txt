@@ -1,0 +1,55 @@
+أكيد، هذا البرومبت المدمج:
+
+---
+
+## 1. Fix the Logo
+
+The current logo on the website is corrupted — the lightbulb area at the top is damaged. I am uploading the correct original logo file again (insight_exam_logo1.png).
+
+Replace the current logo with this new uploaded file everywhere on the site (navbar, hero, favicon). When processing this logo:
+
+- Do NOT crop or trim the top of the image — the lightbulb at the top must remain fully intact
+- Only remove the white background corners to make them transparent, but be very careful not to remove any part of the blue rounded-square icon itself
+- Keep the entire blue rounded-square shape with everything inside it (brain, lightbulb, arrows) perfectly preserved
+- If you cannot cleanly remove the background without damaging the icon, then just use the image as-is without any background removal
+- Make sure the logo displays with no extra background color or box behind it in both navbar and hero section
+
+## 2. Redesign the Visual Style
+
+Redesign the entire website with a modern, premium aesthetic while keeping ALL the existing functionality, content, pages, and features exactly the same. Only change the visual design:
+
+**Color Palette:**
+- Primary: Deep navy (#0f172a) with vibrant blue accent (#3b82f6)
+- Use subtle gradients (blue to purple: #3b82f6 → #8b5cf6) for hero sections and buttons
+- Backgrounds: Clean white (#ffffff) with very light gray sections (#f8fafc)
+- Cards: White with subtle shadow and rounded corners (16px border-radius)
+- Text: Dark gray (#1e293b) for body, navy (#0f172a) for headings
+
+**Modern Design Elements:**
+- Add a frosted glass (glassmorphism) effect to the navbar: semi-transparent background with backdrop blur
+- Use smooth gradient backgrounds for hero/header sections instead of flat solid colors
+- Add subtle hover animations on all buttons and cards (scale up slightly, shadow increase)
+- Use larger, bolder typography for headings with more whitespace
+- Add soft blob/wave shapes as decorative background elements
+- Cards should have a clean, minimal look with generous padding
+- Buttons should have rounded corners (full rounded / pill shape) with gradient fills
+- Add smooth scroll animations — elements fade in as user scrolls down
+- Use modern icon style (outlined, not filled) for all icons
+
+**Typography:**
+- Use IBM Plex Sans Arabic for all Arabic text
+- Headings: Bold, large size with tight line-height
+- Body: Regular weight, comfortable reading size with relaxed line-height
+
+**Overall Vibe:**
+- Think: Apple website meets modern SaaS dashboard
+- Clean, spacious, premium feel
+- Lots of whitespace
+- Subtle animations that feel polished, not distracting
+- Professional but student-friendly
+
+IMPORTANT: Do NOT change any text content, functionality, page structure, forms, or features. Only update the visual styling, design, and fix the logo.
+
+---
+
+انسخه وارفق معاه صورة الشعار الأصلي وأرسلهم مع بعض.
