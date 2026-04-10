@@ -1,7 +1,7 @@
 import { Link } from "wouter";
 import { Brain, Target, TrendingUp, ArrowLeft, Sun, Moon } from "lucide-react";
 import Footer from "@/components/Footer";
-import logo from "@assets/insight_exam_logo_1775829320780.png";
+const logo = "/logo.png";
 import { useDarkMode } from "@/lib/dark-mode";
 
 export default function Landing() {
@@ -14,7 +14,7 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-2 text-blue-600 font-bold text-xl">
-              <img src={logo} alt="Insight Exam" className="h-10 w-10 rounded-lg object-cover" />
+              <img src={logo} alt="Insight Exam" className="h-10 w-10" />
               <span>Insight Exam</span>
             </div>
             <div className="flex items-center gap-4">
@@ -41,6 +41,9 @@ export default function Landing() {
       {/* Hero */}
       <section className="bg-gradient-to-br from-blue-600 to-blue-800 text-white py-24">
         <div className="max-w-4xl mx-auto px-4 text-center">
+          <div className="flex justify-center mb-6">
+            <img src={logo} alt="Insight Exam" className="h-24 w-24 drop-shadow-2xl" />
+          </div>
           <div className="inline-flex items-center gap-2 bg-blue-500 bg-opacity-30 rounded-full px-4 py-2 text-sm mb-6">
             <Brain className="h-4 w-4" />
             منصة التحليل الذكي للاختبارات

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { CheckCircle2, XCircle, Clock, Shield, LogOut, RefreshCw } from "lucide-react";
-import logo from "@assets/insight_exam_logo_1775829320780.png";
+const logo = "/logo.png";
 import { useDarkMode } from "@/lib/dark-mode";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -120,7 +120,7 @@ export default function Admin() {
         <div className="w-full max-w-sm">
           <div className="text-center mb-8">
             <div className="inline-flex items-center gap-2 text-blue-600 font-bold text-xl mb-2">
-              <img src={logo} alt="Insight Exam" className="h-10 w-10 rounded-lg object-cover" />
+              <img src={logo} alt="Insight Exam" className="h-10 w-10" />
               <span>Insight Exam</span>
             </div>
             <div className="flex items-center justify-center gap-2 text-slate-700 dark:text-slate-300 mt-1">
@@ -177,7 +177,7 @@ export default function Admin() {
       <nav className="bg-white dark:bg-[#1e293b] border-b border-slate-200 dark:border-slate-700 sticky top-0 z-50 transition-colors duration-300">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2 text-blue-600 font-bold">
-            <img src={logo} alt="Insight Exam" className="h-8 w-8 rounded-lg object-cover" />
+            <img src={logo} alt="Insight Exam" className="h-8 w-8" />
             <span className="text-sm">لوحة الإدارة</span>
           </div>
           <div className="flex items-center gap-3">

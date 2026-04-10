@@ -4,7 +4,7 @@ import { useLogout, getGetMeQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { PlusCircle, LogOut, Menu, X, BarChart2, Sun, Moon } from "lucide-react";
 import { useState } from "react";
-import logo from "@assets/insight_exam_logo_1775829320780.png";
+const logo = "/logo.png";
 import { useDarkMode } from "@/lib/dark-mode";
 
 export default function Navbar() {
@@ -29,7 +29,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/dashboard" className="flex items-center gap-2 text-blue-600 font-bold text-lg">
-            <img src={logo} alt="Insight Exam" className="h-9 w-9 rounded-lg object-cover" />
+            <img src={logo} alt="Insight Exam" className="h-9 w-9" />
             <span>Insight Exam</span>
           </Link>
 

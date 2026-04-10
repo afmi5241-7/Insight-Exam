@@ -3,7 +3,7 @@ import { Link, useLocation } from "wouter";
 import { useRegister, getGetMeQueryKey } from "@workspace/api-client-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { Mail, Lock, User, Sun, Moon } from "lucide-react";
-import logo from "@assets/insight_exam_logo_1775829320780.png";
+const logo = "/logo.png";
 import { useDarkMode } from "@/lib/dark-mode";
 
 export default function Register() {
@@ -38,7 +38,7 @@ export default function Register() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 text-blue-600 font-bold text-2xl mb-2">
-            <img src={logo} alt="Insight Exam" className="h-11 w-11 rounded-xl object-cover" />
+            <img src={logo} alt="Insight Exam" className="h-11 w-11" />
             Insight Exam
           </div>
           <h1 className="text-2xl font-bold text-slate-800 dark:text-slate-100">إنشاء حساب جديد</h1>
