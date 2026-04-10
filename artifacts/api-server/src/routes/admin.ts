@@ -1,10 +1,9 @@
 import { Router, type IRouter } from "express";
 import { db, questionsTable, coursesTable } from "@workspace/db";
-import { eq, inArray } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
 const router: IRouter = Router();
 
-// Simple hardcoded admin password — change by setting ADMIN_PASSWORD env var
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "admin2024";
 
 router.post("/admin/verify", (req, res): void => {
@@ -41,15 +40,20 @@ router.get("/admin/questions", async (req, res): Promise<void> => {
     .select({
       id: questionsTable.id,
       text: questionsTable.text,
+      imageUrl: questionsTable.imageUrl,
       chapter: questionsTable.chapter,
+      topic: questionsTable.topic,
       questionType: questionsTable.questionType,
       difficulty: questionsTable.difficulty,
-      examPeriod: questionsTable.examPeriod,
+      year: questionsTable.year,
+      examType: questionsTable.examType,
+      sourceLink: questionsTable.sourceLink,
       status: questionsTable.status,
       createdAt: questionsTable.createdAt,
       courseId: questionsTable.courseId,
       courseName: coursesTable.name,
-      courseCode: coursesTable.code,
+      faculty: coursesTable.faculty,
+      department: coursesTable.department,
     })
     .from(questionsTable)
     .leftJoin(coursesTable, eq(questionsTable.courseId, coursesTable.id))

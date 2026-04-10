@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { CheckCircle2, XCircle, Clock, Shield, LogOut, RefreshCw } from "lucide-react";
+import { CheckCircle2, XCircle, Clock, Shield, LogOut, RefreshCw, Sun, Moon, ExternalLink, Image } from "lucide-react";
 const logo = "/logo.png";
 import { useDarkMode } from "@/lib/dark-mode";
 
@@ -11,32 +11,29 @@ type QuestionStatus = "pending" | "approved" | "rejected";
 interface AdminQuestion {
   id: number;
   text: string;
+  imageUrl: string | null;
   chapter: string;
+  topic: string | null;
   questionType: string;
   difficulty: string;
-  examPeriod: string;
+  year: string;
+  examType: string;
+  sourceLink: string | null;
   status: string;
   createdAt: string;
   courseId: number;
   courseName: string | null;
-  courseCode: string | null;
+  faculty: string | null;
+  department: string | null;
 }
 
-const typeLabel: Record<string, string> = {
-  multiple_choice: "اختيار من متعدد",
-  true_false: "صح وخطأ",
-  essay: "مقالي",
-  fill_blank: "أكمل الفراغ",
-};
-const diffLabel: Record<string, string> = {
-  easy: "سهل",
-  medium: "متوسط",
-  hard: "صعب",
-};
 const diffColor: Record<string, string> = {
   easy: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
   medium: "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
   hard: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+  "سهل": "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+  "متوسط": "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400",
+  "صعب": "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
 };
 
 export default function Admin() {
@@ -51,6 +48,7 @@ export default function Admin() {
   const [filter, setFilter] = useState<QuestionStatus>("pending");
   const [loading, setLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
+  const [expandedImage, setExpandedImage] = useState<string | null>(null);
 
   const fetchQuestions = async (status: QuestionStatus) => {
     setLoading(true);
@@ -181,17 +179,10 @@ export default function Admin() {
             <span className="text-sm">لوحة الإدارة</span>
           </div>
           <div className="flex items-center gap-3">
-            <button
-              onClick={toggle}
-              className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
-              title={dark ? "الوضع المضيء" : "الوضع الليلي"}
-            >
-              {dark ? "☀️" : "🌙"}
+            <button onClick={toggle} className="p-2 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+              {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </button>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400 hover:text-red-600 transition-colors"
-            >
+            <button onClick={handleLogout} className="flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400 hover:text-red-600 transition-colors">
               <LogOut className="h-4 w-4" />
               خروج
             </button>
@@ -200,26 +191,21 @@ export default function Admin() {
       </nav>
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-        {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-2xl font-black text-slate-800 dark:text-slate-100">مراجعة الأسئلة</h1>
             {pendingCount > 0 && (
               <p className="text-sm text-amber-600 dark:text-amber-400 mt-1 font-medium">
-                لديك {pendingCount} سؤال بانتظار المراجعة
+                {pendingCount} سؤال بانتظار المراجعة
               </p>
             )}
           </div>
-          <button
-            onClick={() => fetchQuestions(filter)}
-            className="flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400 hover:text-blue-600 transition-colors"
-          >
+          <button onClick={() => fetchQuestions(filter)} className="flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400 hover:text-blue-600 transition-colors">
             <RefreshCw className="h-4 w-4" />
             تحديث
           </button>
         </div>
 
-        {/* Filter tabs */}
         <div className="flex gap-2 mb-6 bg-white dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700 rounded-xl p-1 w-fit transition-colors duration-300">
           {(["pending", "approved", "rejected"] as QuestionStatus[]).map(s => {
             const labels = { pending: "قيد المراجعة", approved: "مقبولة", rejected: "مرفوضة" };
@@ -228,11 +214,7 @@ export default function Admin() {
               <button
                 key={s}
                 onClick={() => setFilter(s)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  active
-                    ? "bg-blue-600 text-white shadow-sm"
-                    : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700"
-                }`}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${active ? "bg-blue-600 text-white shadow-sm" : "text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700"}`}
               >
                 {labels[s]}
                 {s === "pending" && pendingCount > 0 && (
@@ -245,7 +227,6 @@ export default function Admin() {
           })}
         </div>
 
-        {/* Questions list */}
         {loading ? (
           <div className="text-center py-16">
             <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
@@ -261,39 +242,49 @@ export default function Admin() {
               <div key={q.id} className="bg-white dark:bg-[#1e293b] border border-slate-200 dark:border-slate-700 rounded-2xl p-5 transition-colors duration-300">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
+                    {/* Course info */}
                     <div className="flex items-center gap-2 mb-2 flex-wrap">
                       <span className="text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded-full">
-                        {q.courseName ?? "—"} {q.courseCode ? `(${q.courseCode})` : ""}
+                        {q.courseName ?? "—"}
                       </span>
-                      <span className="text-xs text-slate-500 dark:text-slate-400">{q.chapter}</span>
+                      {q.faculty && <span className="text-xs text-slate-400 dark:text-slate-500">{q.faculty}</span>}
+                      <span className="text-xs text-slate-500 dark:text-slate-400">{q.chapter}{q.topic ? ` · ${q.topic}` : ""}</span>
                     </div>
-                    <p className="text-slate-800 dark:text-slate-200 text-sm leading-relaxed mb-3">{q.text}</p>
+
+                    {/* Question text */}
+                    {q.text && <p className="text-slate-800 dark:text-slate-200 text-sm leading-relaxed mb-3">{q.text}</p>}
+
+                    {/* Image */}
+                    {q.imageUrl && (
+                      <button onClick={() => setExpandedImage(q.imageUrl)} className="mb-3 block">
+                        <img src={q.imageUrl} alt="question" className="max-h-32 rounded-lg border border-slate-200 dark:border-slate-600 object-contain hover:opacity-80 transition-opacity" />
+                        <p className="text-xs text-blue-500 mt-1 flex items-center gap-1"><Image className="h-3 w-3" /> انقر لتكبير الصورة</p>
+                      </button>
+                    )}
+
+                    {/* Tags */}
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-xs bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded-full">
-                        {typeLabel[q.questionType] ?? q.questionType}
-                      </span>
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${diffColor[q.difficulty] ?? "bg-slate-100 text-slate-600"}`}>
-                        {diffLabel[q.difficulty] ?? q.difficulty}
-                      </span>
-                      <span className="text-xs text-slate-400 dark:text-slate-500">{q.examPeriod}</span>
+                      <span className="text-xs bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 px-2 py-0.5 rounded-full">{q.questionType}</span>
+                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${diffColor[q.difficulty] ?? "bg-slate-100 text-slate-600"}`}>{q.difficulty}</span>
+                      <span className="text-xs text-slate-400 dark:text-slate-500">{q.year} · {q.examType}</span>
                     </div>
+
+                    {/* Source link */}
+                    {q.sourceLink && (
+                      <a href={q.sourceLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs text-blue-500 hover:underline mt-2" dir="ltr">
+                        <ExternalLink className="h-3 w-3" />
+                        {q.sourceLink.length > 50 ? q.sourceLink.slice(0, 50) + "…" : q.sourceLink}
+                      </a>
+                    )}
                   </div>
 
                   {filter === "pending" && (
                     <div className="flex flex-col gap-2 flex-shrink-0">
-                      <button
-                        onClick={() => updateStatus(q.id, "approved")}
-                        disabled={actionLoading === q.id}
-                        className="flex items-center gap-1 bg-green-600 text-white text-xs px-3 py-2 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 font-medium whitespace-nowrap"
-                      >
+                      <button onClick={() => updateStatus(q.id, "approved")} disabled={actionLoading === q.id} className="flex items-center gap-1 bg-green-600 text-white text-xs px-3 py-2 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 font-medium whitespace-nowrap">
                         <CheckCircle2 className="h-3.5 w-3.5" />
                         قبول ✅
                       </button>
-                      <button
-                        onClick={() => updateStatus(q.id, "rejected")}
-                        disabled={actionLoading === q.id}
-                        className="flex items-center gap-1 bg-red-600 text-white text-xs px-3 py-2 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 font-medium whitespace-nowrap"
-                      >
+                      <button onClick={() => updateStatus(q.id, "rejected")} disabled={actionLoading === q.id} className="flex items-center gap-1 bg-red-600 text-white text-xs px-3 py-2 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 font-medium whitespace-nowrap">
                         <XCircle className="h-3.5 w-3.5" />
                         رفض ❌
                       </button>
@@ -301,15 +292,9 @@ export default function Admin() {
                   )}
 
                   {filter !== "pending" && (
-                    <div>
-                      <button
-                        onClick={() => updateStatus(q.id, "pending")}
-                        disabled={actionLoading === q.id}
-                        className="text-xs text-slate-500 dark:text-slate-400 hover:text-blue-600 transition-colors border border-slate-200 dark:border-slate-600 px-2 py-1 rounded-lg"
-                      >
-                        إعادة للمراجعة
-                      </button>
-                    </div>
+                    <button onClick={() => updateStatus(q.id, "pending")} disabled={actionLoading === q.id} className="text-xs text-slate-500 dark:text-slate-400 hover:text-blue-600 transition-colors border border-slate-200 dark:border-slate-600 px-2 py-1 rounded-lg flex-shrink-0">
+                      إعادة للمراجعة
+                    </button>
                   )}
                 </div>
               </div>
@@ -317,6 +302,13 @@ export default function Admin() {
           </div>
         )}
       </main>
+
+      {/* Image lightbox */}
+      {expandedImage && (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4" onClick={() => setExpandedImage(null)}>
+          <img src={expandedImage} alt="expanded" className="max-w-full max-h-full rounded-xl object-contain" />
+        </div>
+      )}
     </div>
   );
 }

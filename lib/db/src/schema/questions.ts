@@ -6,11 +6,15 @@ import { coursesTable } from "./courses";
 export const questionsTable = pgTable("questions", {
   id: serial("id").primaryKey(),
   courseId: integer("course_id").notNull().references(() => coursesTable.id, { onDelete: "cascade" }),
-  text: text("text").notNull(),
+  text: text("text").notNull().default(""),
+  imageUrl: text("image_url"),
   chapter: text("chapter").notNull(),
+  topic: text("topic"),
   questionType: text("question_type").notNull(),
   difficulty: text("difficulty").notNull(),
-  examPeriod: text("exam_period").notNull(),
+  year: text("year").notNull().default(""),
+  examType: text("exam_type").notNull().default(""),
+  sourceLink: text("source_link"),
   status: text("status").notNull().default("pending"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });

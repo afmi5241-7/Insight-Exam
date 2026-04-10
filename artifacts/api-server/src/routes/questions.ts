@@ -1,126 +1,81 @@
 import { Router, type IRouter } from "express";
 import { db, questionsTable, coursesTable } from "@workspace/db";
 import { eq, and } from "drizzle-orm";
-import {
-  AddQuestionBody,
-  AddQuestionParams,
-  GetCourseQuestionsParams,
-} from "@workspace/api-zod";
-import { sendNewQuestionNotification } from "../lib/email";
 
 const router: IRouter = Router();
 
-function requireAuth(req: any, res: any): number | null {
-  const userId = req.session?.userId;
-  if (!userId) {
-    res.status(401).json({ error: "غير مصرح" });
-    return null;
+router.post("/questions/submit", async (req, res): Promise<void> => {
+  const { faculty, department, courseName, text, imageUrl, chapter, topic,
+    questionType, difficulty, year, examType, sourceLink } = req.body ?? {};
+
+  if (!faculty || !department || !courseName) {
+    res.status(400).json({ error: "يرجى إدخال بيانات المقرر كاملة" });
+    return;
   }
-  return userId;
-}
-
-router.get("/courses/:id/questions", async (req, res): Promise<void> => {
-  const userId = requireAuth(req, res);
-  if (!userId) return;
-
-  const raw = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
-  const params = GetCourseQuestionsParams.safeParse({ id: raw });
-  if (!params.success) {
-    res.status(400).json({ error: params.error.message });
+  if (!chapter || !questionType || !difficulty || !year || !examType) {
+    res.status(400).json({ error: "يرجى ملء جميع الحقول المطلوبة" });
+    return;
+  }
+  if (!text && !imageUrl) {
+    res.status(400).json({ error: "يجب إدخال نص السؤال أو رفع صورة" });
     return;
   }
 
-  const [course] = await db
+  // Find or create course
+  let [course] = await db
     .select()
     .from(coursesTable)
-    .where(and(eq(coursesTable.id, params.data.id), eq(coursesTable.userId, userId)));
+    .where(and(
+      eq(coursesTable.faculty, String(faculty)),
+      eq(coursesTable.department, String(department)),
+      eq(coursesTable.name, String(courseName)),
+    ))
+    .limit(1);
 
   if (!course) {
-    res.status(404).json({ error: "المقرر غير موجود" });
-    return;
-  }
-
-  const questions = await db
-    .select()
-    .from(questionsTable)
-    .where(eq(questionsTable.courseId, params.data.id))
-    .orderBy(questionsTable.createdAt);
-
-  res.json(questions.map(q => ({
-    id: q.id,
-    courseId: q.courseId,
-    text: q.text,
-    chapter: q.chapter,
-    questionType: q.questionType,
-    difficulty: q.difficulty,
-    examPeriod: q.examPeriod,
-    status: q.status,
-    createdAt: q.createdAt,
-  })));
-});
-
-router.post("/courses/:id/questions", async (req, res): Promise<void> => {
-  const userId = requireAuth(req, res);
-  if (!userId) return;
-
-  const raw = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
-  const params = AddQuestionParams.safeParse({ id: raw });
-  if (!params.success) {
-    res.status(400).json({ error: params.error.message });
-    return;
-  }
-
-  const [course] = await db
-    .select()
-    .from(coursesTable)
-    .where(and(eq(coursesTable.id, params.data.id), eq(coursesTable.userId, userId)));
-
-  if (!course) {
-    res.status(404).json({ error: "المقرر غير موجود" });
-    return;
-  }
-
-  const parsed = AddQuestionBody.safeParse(req.body);
-  if (!parsed.success) {
-    res.status(400).json({ error: parsed.error.message });
-    return;
+    const [newCourse] = await db
+      .insert(coursesTable)
+      .values({ faculty: String(faculty), department: String(department), name: String(courseName) })
+      .returning();
+    course = newCourse;
   }
 
   const [question] = await db
     .insert(questionsTable)
     .values({
-      courseId: params.data.id,
-      text: parsed.data.text,
-      chapter: parsed.data.chapter,
-      questionType: parsed.data.questionType,
-      difficulty: parsed.data.difficulty,
-      examPeriod: parsed.data.examPeriod,
+      courseId: course.id,
+      text: String(text || ""),
+      imageUrl: imageUrl ? String(imageUrl) : null,
+      chapter: String(chapter),
+      topic: topic ? String(topic) : null,
+      questionType: String(questionType),
+      difficulty: String(difficulty),
+      year: String(year),
+      examType: String(examType),
+      sourceLink: sourceLink ? String(sourceLink) : null,
       status: "pending",
     })
     .returning();
 
-  // Send admin email notification (non-blocking)
-  sendNewQuestionNotification({
-    text: question.text,
-    chapter: question.chapter,
-    questionType: question.questionType,
-    difficulty: question.difficulty,
-    examPeriod: question.examPeriod,
-    courseName: course.name,
-    courseCode: course.code,
-  }).catch(() => {});
-
   res.status(201).json({
     id: question.id,
     courseId: question.courseId,
-    text: question.text,
-    chapter: question.chapter,
-    questionType: question.questionType,
-    difficulty: question.difficulty,
-    examPeriod: question.examPeriod,
     status: question.status,
     createdAt: question.createdAt,
   });
+});
+
+router.get("/courses/:id/questions", async (req, res): Promise<void> => {
+  const id = parseInt(req.params.id as string);
+  if (isNaN(id)) { res.status(400).json({ error: "معرف غير صالح" }); return; }
+
+  const questions = await db
+    .select()
+    .from(questionsTable)
+    .where(eq(questionsTable.courseId, id))
+    .orderBy(questionsTable.createdAt);
+
+  res.json(questions);
 });
 
 export default router;

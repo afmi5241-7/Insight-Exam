@@ -1,0 +1,104 @@
+هذا البرومبت الشامل المحدّث، يشمل كل اللي ذكرته:
+
+---
+
+## Update the Insight Exam website with the following changes:
+
+### ❌ REMOVE these features:
+- Remove ALL signup/login/authentication pages and logic completely
+- Remove the professor name field from course creation
+- No user accounts at all — the site is fully open to anyone
+
+---
+
+### 🏠 Landing Page (الصفحة الرئيسية)
+A clean, welcoming page with calm and eye-friendly colors (soft blues, whites, light grays). It should feel professional and student-friendly. Include:
+
+- The Insight Exam logo and name
+- Arabic tagline: "حوّل مراجعتك من عشوائية إلى ذكية"
+- Brief explanation of the platform in 3 simple steps
+- **Two main CTA sections/buttons clearly visible:**
+  - 🟢 **"أدخل أسئلة"** — for students who want to contribute past exam questions
+  - 🔵 **"استعرض التحليلات"** — for students who want to view analytics and benefit from existing data
+- Optionally suggest these additional sections on the landing page or as separate pages:
+  - **"عن المنصة"** — About section explaining the SIT methodology and how the analysis works
+  - **"الأسئلة الشائعة"** — FAQ section (e.g., "هل المنصة مجانية؟", "كيف تتم مراجعة الأسئلة؟", "هل بياناتي آمنة؟")
+  - **"تواصل معنا"** — Simple contact section with email: admin@insightexam.com
+
+---
+
+### 📝 Question Entry Flow (مسار إدخال الأسئلة) — DETAILED USER FLOW
+
+When a user clicks "أدخل أسئلة", they go through this step-by-step flow. Make it feel smooth and guided — like a wizard/stepper UI with a progress bar at the top.
+
+**Step 1 — Course Info (معلومات المقرر):**
+Three fields on one page:
+1. **اسم الكلية** — Dropdown list (e.g., كلية إدارة الأعمال، كلية الهندسة، كلية العلوم، كلية الحاسب الآلي، كلية التربية، كلية الآداب، كلية الحقوق، أخرى)
+2. **القسم** — Text input field (the student types their department name)
+3. **المقرر** — Text input field (the student types the course name)
+
+After filling these, click "التالي" to go to Step 2.
+
+**Step 2 — Question Details (تفاصيل السؤال):**
+
+4. **نص السؤال** — Large text area for typing the question
+5. **رفع صورة (اختياري)** — An optional image upload button for complex questions that are hard to type (supports jpg, jpeg, png, gif, webp). Show a preview of the uploaded image. Label it: "إذا كان السؤال معقد أو يحتوي على رسومات، ارفع صورة له"
+
+6. **الفصل (Chapter)** — Dropdown list with options: Chapter 1 through Chapter 20, + "أخرى" (other). Next to it, an **optional** text field labeled "الموضوع (اختياري)" for the student to type the specific topic if they know it.
+
+7. **نوع السؤال** — Dropdown list with these exact options:
+   - اختيار من متعدد
+   - صح وخطأ
+   - أكمل الفراغ
+   - أسئلة التوصيل (Matching)
+   - إجابة قصيرة
+   - إجابة طويلة (مقالي)
+   - مسائل رياضية / حسابية
+   - صحّح الخطأ
+   - نوع آخر
+
+8. **مستوى الصعوبة** — Dropdown list:
+   - سهل
+   - متوسط
+   - صعب
+
+9. **السنة** — Dropdown list starting from **2023** up to **2026** (current year)
+
+10. **نوع الاختبار** — Dropdown list:
+    - ميد 1 (Midterm 1)
+    - ميد 2 (Midterm 2)
+    - فاينل (Final)
+
+11. **رابط مصدر أو شرح (اختياري)** — Text input field. Label it: "أضف رابط لشرح السؤال أو الموضوع إن وجد (مقطع يوتيوب، ملخص، أي مصدر مجاني)". Show a small hint text below: "شارك معرفتك مع زملائك! 💡"
+
+After filling all required fields, the user clicks **"إرسال السؤال"**.
+
+**After Submission:**
+- Show a success message: "تم إرسال السؤال بنجاح وهو الآن قيد المراجعة ✅"
+- Show a status badge: 🟡 قيد المراجعة
+- Give the user two buttons:
+  - **"أضف سؤال آخر"** — clears the question fields (Step 2) but keeps the course info (Step 1) so they don't have to re-enter college/department/course
+  - **"العودة للرئيسية"**
+
+---
+
+### 📊 Analytics Section (استعرض التحليلات)
+When a user clicks "استعرض التحليلات" from the landing page:
+- First, let them select/search for a course (by college, department, and course name)
+- Then show the full dashboard with all the charts and analytics (as previously designed)
+- Only show **approved** questions in the analytics
+- If a question has a "رابط مصدر", show a section called **"مصادر مفيدة 📚"** that lists all shared links for that course, organized by chapter
+
+---
+
+### 🎨 Design Notes
+- Keep the design **calm and eye-friendly** — soft blues, whites, light grays
+- Use smooth transitions between steps
+- The stepper/wizard should show progress (Step 1 of 2, Step 2 of 2)
+- Mobile-friendly — many students will use their phones
+- All text in Arabic, RTL layout
+- If you have suggestions for additional sections or features that would improve the student experience, feel free to add them and let me know
+
+---
+
+انسخه كامل وأرسله. وإذا عندك أي تعديل أو إضافة قبل ما ترسله قولي.
