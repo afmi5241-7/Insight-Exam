@@ -71,46 +71,43 @@ export default function Landing() {
       </section>
 
       {/* How it works */}
-      <section className="py-20 sm:py-24 bg-white dark:bg-[#0a1628]">
+      <section className="py-28 sm:py-36 bg-white dark:bg-[#0a1628]">
         <div className="max-w-5xl mx-auto px-4">
-          <div className="text-center mb-16">
-            <span className="inline-block bg-[#f0f6ff] dark:bg-[#0f2240] text-[#2d6cc0] dark:text-[#4a9eed] text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
+          <div className="text-center mb-20">
+            <span className="inline-block bg-[#f0f6ff] dark:bg-[#0f2240] text-[#2d6cc0] dark:text-[#4a9eed] text-sm font-semibold px-4 py-1.5 rounded-full mb-5">
               كيف يعمل؟
             </span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-[#0f2240] dark:text-white mb-3">
+            <h2 className="text-4xl sm:text-5xl font-bold text-[#0f2240] dark:text-white mb-3">
               ثلاث خطوات بسيطة
             </h2>
           </div>
           <div className="grid sm:grid-cols-3 gap-8">
             {[
               {
-                num: "١",
-                icon: <Upload className="h-7 w-7 text-white" />,
+                icon: <Upload className="h-8 w-8 text-white" />,
                 gradient: "from-[#1a4b8c] to-[#2d6cc0]",
-                title: "أدخل الأسئلة",
-                desc: "شارك أسئلة الاختبارات السابقة للمقررات الدراسية — اكتابةً أو بصورة",
+                title: "إدخال الأسئلة",
+                desc: "شارك أسئلة الاختبارات السابقة للمقررات الدراسية — نصاً أو بصورة",
               },
               {
-                num: "٢",
-                icon: <BookOpen className="h-7 w-7 text-white" />,
+                icon: <BookOpen className="h-8 w-8 text-white" />,
                 gradient: "from-[#2d6cc0] to-[#4a9eed]",
-                title: "تُراجع الأسئلة",
-                desc: "يراجع فريقنا كل سؤال للتحقق من جودته قبل إضافته للتحليلات",
+                title: "مراجعة الأسئلة",
+                desc: "يراجع فريقنا كل سؤال للتحقق من جودته وصحته قبل إضافته للتحليلات",
               },
               {
-                num: "٣",
-                icon: <TrendingUp className="h-7 w-7 text-white" />,
+                icon: <TrendingUp className="h-8 w-8 text-white" />,
                 gradient: "from-[#4a9eed] to-[#7ec8f0]",
-                title: "احصل على التحليلات",
+                title: "استكشف التحليلات",
                 desc: "اكتشف الفصول الأكثر تكراراً وأنواع الأسئلة والتوصيات الذكية للمراجعة",
               },
             ].map((step, i) => (
-              <div key={i} className="group relative bg-white dark:bg-[#0f2240] rounded-2xl p-8 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-slate-100 dark:border-[#1a3a6a]/40">
-                <div className={`relative w-14 h-14 bg-gradient-to-br ${step.gradient} rounded-2xl flex items-center justify-center mb-5 shadow-lg`}>
+              <div key={i} className="group bg-white dark:bg-[#0f2240] rounded-2xl p-10 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 border border-slate-100 dark:border-[#1a3a6a]/40">
+                <div className={`w-16 h-16 bg-gradient-to-br ${step.gradient} rounded-2xl flex items-center justify-center mb-7 shadow-lg`}>
                   {step.icon}
                 </div>
-                <h3 className="relative text-lg font-bold text-[#0f2240] dark:text-white mb-3">{step.title}</h3>
-                <p className="relative text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{step.desc}</p>
+                <h3 className="text-xl font-bold text-[#0f2240] dark:text-white mb-4">{step.title}</h3>
+                <p className="text-slate-500 dark:text-slate-400 text-base leading-relaxed">{step.desc}</p>
               </div>
             ))}
           </div>
@@ -134,7 +131,7 @@ export default function Landing() {
                 </div>
                 <h3 className="text-xl font-bold text-[#0f2240] dark:text-white mb-3">إدخال الأسئلة</h3>
                 <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-5">
-                  ساعد زملاءك بمشاركة أسئلة الاختبارات السابقة. كلما أضفنا، كلما استفدنا جميعاً
+                  ساعد زملاءك بمشاركة أسئلة الاختبارات السابقة. كلما أضفنا، كلما استفدنا جميعاً 🎯
                 </p>
                 <span className="inline-flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold text-sm group-hover:gap-3 transition-all">
                   ابدأ الآن
@@ -149,9 +146,9 @@ export default function Landing() {
                 <div className="w-14 h-14 bg-gradient-to-br from-[#2d6cc0] to-[#4a9eed] rounded-2xl flex items-center justify-center mb-5 shadow-lg shadow-[#2d6cc0]/25">
                   <BarChart2 className="h-7 w-7 text-white" />
                 </div>
-                <h3 className="text-xl font-bold text-[#0f2240] dark:text-white mb-3">استعرض التحليلات</h3>
+                <h3 className="text-xl font-bold text-[#0f2240] dark:text-white mb-3">استكشف التحليلات</h3>
                 <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-5">
-                  اعرف أي الفصول والمواضيع الأكثر تكراراً في اختباراتك واستفد من توصيات المراجعة
+                  اعرف أي الفصول والمواضيع الأكثر تكراراً في الاختبارات واستفد من توصيات المراجعة
                 </p>
                 <span className="inline-flex items-center gap-1.5 text-[#2d6cc0] dark:text-[#4a9eed] font-semibold text-sm group-hover:gap-3 transition-all">
                   اكتشف الآن
@@ -166,28 +163,28 @@ export default function Landing() {
       {/* About */}
       <section id="about" className="py-20 sm:py-24 bg-white dark:bg-[#0a1628]">
         <div className="max-w-5xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <span className="inline-block bg-[#f0f6ff] dark:bg-[#0f2240] text-[#2d6cc0] dark:text-[#4a9eed] text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
-              عن المنصة
+          <div className="text-center mb-14">
+            <span className="inline-block bg-[#f0f6ff] dark:bg-[#0f2240] text-[#2d6cc0] dark:text-[#4a9eed] text-sm font-semibold px-4 py-1.5 rounded-full mb-5">
+              لماذا Insight Exam؟
             </span>
-            <h2 className="text-3xl sm:text-4xl font-bold text-[#0f2240] dark:text-white mb-4">
-              ذكاء جماعي لصالح الجميع
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#0f2240] dark:text-white mb-5">
+              ركّز على ما يهم فعلاً
             </h2>
             <p className="text-slate-500 dark:text-slate-400 leading-relaxed text-base sm:text-lg max-w-2xl mx-auto">
-              Insight Exam منصة تعليمية جماعية للطلاب الجامعيين. عندما يشارك الطلاب أسئلة الاختبارات السابقة، تكتشف الخوارزميات الأنماط وتحدد المواضيع الأكثر تكراراً — مما يساعد الجميع على التركيز في مراجعتهم بدلاً من المراجعة العشوائية.
+              بدلاً من مراجعة المنهج كاملاً بشكل عشوائي، تساعدك المنصة على اكتشاف الأنماط المخفية في اختبارات السنوات السابقة — فتعرف أي الفصول تتكرر أكثر، وأي أنواع الأسئلة يركّز عليها، وتبدأ مراجعتك بثقة.
             </p>
           </div>
           <div className="grid sm:grid-cols-3 gap-6">
             {[
-              { icon: <Shield className="h-6 w-6 text-[#2d6cc0] dark:text-[#4a9eed]" />, label: "مجهول تماماً", desc: "لا حسابات، لا بيانات شخصية", bg: "bg-[#f0f6ff] dark:bg-[#0f2240]" },
-              { icon: <Users className="h-6 w-6 text-[#1a4b8c] dark:text-[#7ec8f0]" />, label: "ذكاء جماعي", desc: "كلما شارك الجميع، استفاد الجميع", bg: "bg-[#e8f0fb] dark:bg-[#0a1e3d]" },
-              { icon: <Zap className="h-6 w-6 text-amber-600 dark:text-amber-400" />, label: "تحليلات دقيقة", desc: "رسوم بيانية وتوصيات مخصصة", bg: "bg-amber-50 dark:bg-amber-900/20" },
+              { emoji: "🎯", label: "مراجعة موجّهة", desc: "اعرف الفصول والمواضيع الأكثر أهمية وركّز عليها بدلاً من تضييع وقتك", bg: "bg-[#f0f6ff] dark:bg-[#0f2240]" },
+              { emoji: "👥", label: "مبني بتعاون الطلاب", desc: "كل سؤال يضيفه زميلك يزيد من دقة التحليلات ويفيد الجميع", bg: "bg-emerald-50 dark:bg-emerald-900/20" },
+              { emoji: "🔒", label: "بدون تسجيل دخول", desc: "ادخل وساهم أو استفِد مباشرة — لا حسابات ولا بيانات شخصية مطلوبة", bg: "bg-amber-50 dark:bg-amber-900/20" },
             ].map((item, i) => (
-              <div key={i} className="bg-white dark:bg-[#0f2240] rounded-2xl p-7 border border-slate-100 dark:border-[#1a3a6a]/40 shadow-sm hover:shadow-md transition-all duration-200">
-                <div className={`w-12 h-12 ${item.bg} rounded-xl flex items-center justify-center mb-4`}>
-                  {item.icon}
+              <div key={i} className="bg-white dark:bg-[#0f2240] rounded-2xl p-8 border border-slate-100 dark:border-[#1a3a6a]/40 shadow-sm hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5">
+                <div className={`w-14 h-14 ${item.bg} rounded-2xl flex items-center justify-center mb-5 text-2xl`}>
+                  {item.emoji}
                 </div>
-                <p className="font-bold text-[#0f2240] dark:text-white mb-1.5">{item.label}</p>
+                <p className="font-bold text-[#0f2240] dark:text-white text-lg mb-2">{item.label}</p>
                 <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">{item.desc}</p>
               </div>
             ))}

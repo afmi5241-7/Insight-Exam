@@ -46,7 +46,7 @@ function StatCard({ icon, label, value, color }: { icon: React.ReactNode; label:
       <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
         {icon}
       </div>
-      <p className="text-3xl font-black text-white">{count.toLocaleString("ar-EG")}</p>
+      <p className="text-3xl font-black text-white">{count.toLocaleString()}</p>
       <p className="text-white/85 text-sm font-medium">{label}</p>
     </div>
   );

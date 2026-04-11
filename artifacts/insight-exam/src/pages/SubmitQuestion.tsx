@@ -67,7 +67,7 @@ function ProgressBar({ step }: { step: 1 | 2 }) {
     <div className="flex items-center gap-3 mb-8">
       <div className="flex items-center gap-2.5 flex-1">
         <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold transition-all shadow-sm ${step >= 1 ? "bg-gradient-to-br from-[#2d6cc0] to-[#4a9eed] text-white shadow-[#2d6cc0]/30" : "bg-slate-100 dark:bg-[#0f2240] text-slate-500"}`}>
-          {step > 1 ? <CheckCircle2 className="h-4 w-4" /> : "١"}
+          {step > 1 ? <CheckCircle2 className="h-4 w-4" /> : "1"}
         </div>
         <span className={`text-sm font-semibold ${step >= 1 ? "text-[#2d6cc0] dark:text-[#4a9eed]" : "text-slate-400"}`}>
           معلومات المقرر
@@ -79,7 +79,7 @@ function ProgressBar({ step }: { step: 1 | 2 }) {
           تفاصيل السؤال
         </span>
         <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold transition-all shadow-sm ${step >= 2 ? "bg-gradient-to-br from-[#2d6cc0] to-[#4a9eed] text-white shadow-[#2d6cc0]/30" : "bg-slate-100 dark:bg-[#0f2240] text-slate-500"}`}>
-          ٢
+          2
         </div>
       </div>
     </div>
@@ -225,7 +225,7 @@ export default function SubmitQuestion() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-[#0f2240] dark:text-white">إدخال سؤال جديد</h1>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-1.5">
-            الخطوة {step} من ٢
+            الخطوة {step} من 2
           </p>
         </div>
 

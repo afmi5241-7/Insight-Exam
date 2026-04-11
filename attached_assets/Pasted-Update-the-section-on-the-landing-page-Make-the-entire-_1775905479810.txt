@@ -1,0 +1,149 @@
+Update the "كيف يعمل" section on the landing page:
+
+
+
+
+
+Make the entire section bigger — increase padding, make the cards taller with more spacing, and make the heading "ثلاث خطوات بسيطة" larger
+
+
+
+Change the text in the three cards (right to left):
+
+Card 1 (right):
+
+
+
+
+
+Title: change "أدخل الأسئلة" to "إدخال الأسئلة"
+
+
+
+Description: change "شارك أسئلة الاختبارات السابقة للمقررات الدراسية — اكتابة أو بصورة" to "شارك أسئلة الاختبارات السابقة للمقررات الدراسية — نصاً أو بصورة"
+
+Card 2 (middle):
+
+
+
+
+
+Title: change "تُراجع الأسئلة" to "مراجعة الأسئلة"
+
+
+
+Description: change "يراجع فريقنا كل سؤال للتحقق من جودته قبل إضافته للتحليلات" to "يراجع فريقنا كل سؤال للتحقق من جودته وصحته قبل إضافته للتحليلات"
+
+Card 3 (left):
+
+
+
+
+
+Title: change "احصل على التحليلات" to "استكشف التحليلات"
+
+
+
+Description: keep as is or improve to "اكتشف الفصول الأكثر تكراراً وأنواع الأسئلة والتوصيات الذكية للمراجعة"
+
+
+
+In the "ماذا تريد أن تفعل؟" section:
+
+Left card: Change "استعرض التحليلات" to "استكشف التحليلات"
+
+Also change the description text under it from: "اعرف أي الفصول والمواضيع الأكثر تكراراً في اختباراتك واستفد من توصيات المراجعة" to: "اعرف أي الفصول والمواضيع الأكثر تكراراً في الاختبارات واستفد من توصيات المراجعة"
+
+Right card: Change the description from: "ساعد زملاءك بمشاركة أسئلة الاختبارات السابقة. كلما أضفنا، كلما استفدنا جميعاً" to: "ساعد زملاءك بمشاركة أسئلة الاختبارات السابقة. كلما أضفنا، كلما استفدنا جميعاً 🎯"
+
+
+
+
+
+Redesign the "عن المنصة" section completely with new text and better layout:
+
+Section title badge: "لماذا Insight Exam؟"
+
+Main heading: "ركّز على ما يهم فعلاً"
+
+Description paragraph: "بدلاً من مراجعة المنهج كاملاً بشكل عشوائي، تساعدك المنصة على اكتشاف الأنماط المخفية في اختبارات السنوات السابقة — فتعرف أي الفصول تتكرر أكثر، وأي أنواع الأسئلة يركّز عليها، وتبدأ مراجعتك بثقة."
+
+Three feature cards — use a clean horizontal layout with icons above text, generous padding, and subtle borders instead of heavy dark cards:
+
+Card 1 (right):
+
+
+
+
+
+Icon: 🎯 (target icon)
+
+
+
+Title: "مراجعة موجّهة"
+
+
+
+Description: "اعرف الفصول والمواضيع الأكثر أهمية وركّز عليها بدلاً من تضييع وقتك"
+
+Card 2 (middle):
+
+
+
+
+
+Icon: 👥 (people icon)
+
+
+
+Title: "مبني بتعاون الطلاب"
+
+
+
+Description: "كل سؤال يضيفه زميلك يزيد من دقة التحليلات ويفيد الجميع"
+
+Card 3 (left):
+
+
+
+
+
+Icon: 🔒 (lock/shield icon)
+
+
+
+Title: "بدون تسجيل دخول"
+
+
+
+Description: "ادخل وساهم أو استفِد مباشرة — لا حسابات ولا بيانات شخصية مطلوبة"
+
+Design style:
+
+
+
+
+
+Light background for this section (white or very light gray) — NOT dark
+
+
+
+Cards should be white with subtle shadow and rounded corners
+
+
+
+Icons should be inside small colored circle badges
+
+
+
+Clean and spacious layout with lots of whitespace
+
+
+
+Make it look inviting and student-friendly
+
+
+
+
+
+Change ALL numbers across the entire website from Arabic numerals (١٢٣٤٥٦٧٨٩٠) to English/Western numerals (1234567890). This includes the stats cards, dashboard charts, counters, question counts, and any other numbers displayed anywhere on the site.
