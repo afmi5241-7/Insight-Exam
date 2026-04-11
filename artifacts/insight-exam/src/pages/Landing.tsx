@@ -199,11 +199,8 @@ export default function Landing() {
       <section id="faq" className="py-20 sm:py-24 bg-[#f0f6ff] dark:bg-[#0f2240]">
         <div className="max-w-2xl mx-auto px-4">
           <div className="text-center mb-12">
-            <span className="inline-block bg-white dark:bg-[#0a1628] text-[#2d6cc0] dark:text-[#4a9eed] text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
-              الأسئلة الشائعة
-            </span>
             <h2 className="text-3xl sm:text-4xl font-bold text-[#0f2240] dark:text-white">
-              هل لديك سؤال؟
+              الأسئلة الشائعة
             </h2>
           </div>
           <div className="space-y-3">
