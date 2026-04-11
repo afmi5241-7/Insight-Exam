@@ -38,9 +38,10 @@ export default function Landing() {
           <h1 className="text-5xl sm:text-7xl font-bold mb-5 leading-tight tracking-tight">
             Insight Exam
           </h1>
-          <p className="text-2xl sm:text-3xl font-semibold text-[#7ec8f0] mb-5">
+          <p className="text-2xl sm:text-3xl font-semibold text-[#7ec8f0] mb-2">
             حوّل مراجعتك من عشوائية إلى ذكية
           </p>
+          <p className="text-base italic text-white/60 mb-5">Don't Study Harder... Study Smarter.</p>
           <p className="text-blue-100 text-base sm:text-lg mb-12 max-w-2xl mx-auto leading-relaxed">
             أدخل أسئلة الاختبارات السابقة واكتشف الأنماط المتكررة — ركّز وقتك على ما يهم فعلاً
           </p>
@@ -114,8 +115,66 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* CTA cards */}
+      {/* SIT Methodology */}
       <section className="py-20 sm:py-24 bg-[#f0f6ff] dark:bg-[#0f2240]">
+        <div className="max-w-5xl mx-auto px-4">
+          <div className="text-center mb-14">
+            <span className="inline-block bg-white dark:bg-[#0a1628] text-[#2d6cc0] dark:text-[#4a9eed] text-sm font-semibold px-4 py-1.5 rounded-full mb-5">
+              كيف نحلل الأسئلة؟
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#0f2240] dark:text-white mb-2">
+              مبني على منهجية الابتكار SIT
+            </h2>
+            <p className="text-slate-500 dark:text-slate-400 text-base">التقسيم والتوحيد — Systematic Inventive Thinking</p>
+          </div>
+          <div className="flex flex-col sm:flex-row items-stretch gap-0">
+            {[
+              {
+                emoji: "✂️",
+                title: "التقسيم",
+                sub: "Division",
+                desc: "نقسّم أسئلة الاختبارات السابقة إلى عناصرها الأساسية — الفصل، نوع السؤال، مستوى الصعوبة، وفترة الاختبار",
+                color: "from-[#1a4b8c] to-[#2d6cc0]",
+              },
+              {
+                emoji: "🔬",
+                title: "التحليل",
+                sub: "Analysis",
+                desc: "نحلل الأنماط المخفية في البيانات لاكتشاف التكرارات والأولويات التي تستحق تركيزك",
+                color: "from-[#2d6cc0] to-[#4a9eed]",
+              },
+              {
+                emoji: "🔗",
+                title: "التوحيد",
+                sub: "Unification",
+                desc: "نوحّد النتائج مع مصادر المراجعة في واجهة واحدة تعطيك خطة مراجعة ذكية",
+                color: "from-[#4a9eed] to-[#7ec8f0]",
+              },
+            ].map((card, i) => (
+              <div key={i} className="flex flex-col sm:flex-row items-center flex-1">
+                <div className="bg-white dark:bg-[#0a1628] rounded-2xl border border-slate-100 dark:border-[#1a3a6a]/40 p-8 shadow-sm flex-1 text-center hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 w-full">
+                  <div className={`w-16 h-16 bg-gradient-to-br ${card.color} rounded-2xl flex items-center justify-center mx-auto mb-5 shadow-md text-2xl`}>
+                    {card.emoji}
+                  </div>
+                  <p className="font-black text-[#0f2240] dark:text-white text-xl mb-0.5">{card.title}</p>
+                  <p className="text-xs font-semibold text-[#4a9eed] mb-4 tracking-widest uppercase">{card.sub}</p>
+                  <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">{card.desc}</p>
+                </div>
+                {i < 2 && (
+                  <div className="flex items-center justify-center sm:flex-shrink-0 my-3 sm:my-0 sm:mx-2">
+                    <div className="w-8 h-8 bg-gradient-to-br from-[#2d6cc0] to-[#4a9eed] rounded-full flex items-center justify-center shadow-md">
+                      <span className="text-white font-bold text-sm rotate-90 sm:rotate-0">←</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA cards */}
+      <section className="py-20 sm:py-24 bg-white dark:bg-[#0a1628]">
         <div className="max-w-4xl mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-[#0f2240] dark:text-white">
@@ -161,27 +220,27 @@ export default function Landing() {
       </section>
 
       {/* About */}
-      <section id="about" className="py-20 sm:py-24 bg-white dark:bg-[#0a1628]">
+      <section id="about" className="py-20 sm:py-24 bg-[#f0f6ff] dark:bg-[#0f2240]">
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-14">
-            <span className="inline-block bg-[#f0f6ff] dark:bg-[#0f2240] text-[#2d6cc0] dark:text-[#4a9eed] text-sm font-semibold px-4 py-1.5 rounded-full mb-5">
+            <span className="inline-block bg-white dark:bg-[#0a1628] text-[#2d6cc0] dark:text-[#4a9eed] text-sm font-semibold px-4 py-1.5 rounded-full mb-5">
               لماذا Insight Exam؟
             </span>
             <h2 className="text-3xl sm:text-4xl font-bold text-[#0f2240] dark:text-white mb-5">
-              ركّز على ما يهم فعلاً
+              حوّل مراجعتك من عشوائية إلى ذكية
             </h2>
             <p className="text-slate-500 dark:text-slate-400 leading-relaxed text-base sm:text-lg max-w-2xl mx-auto">
-              بدلاً من مراجعة المنهج كاملاً بشكل عشوائي، تساعدك المنصة على اكتشاف الأنماط المخفية في اختبارات السنوات السابقة — فتعرف أي الفصول تتكرر أكثر، وأي أنواع الأسئلة يركّز عليها، وتبدأ مراجعتك بثقة.
+              يعاني الطلاب من المراجعة العشوائية — ساعات طويلة في دراسة المنهج كاملاً دون معرفة ما يركّز عليه الاختبار. Insight Exam يحل هذه المشكلة بتحليل أنماط الاختبارات وكشف الموضوعات ذات الأولوية، فتعرف أين تركّز جهدك وتبدأ مراجعتك بثقة.
             </p>
           </div>
           <div className="grid sm:grid-cols-3 gap-6">
             {[
-              { emoji: "🎯", label: "مراجعة موجّهة", desc: "اعرف الفصول والمواضيع الأكثر أهمية وركّز عليها بدلاً من تضييع وقتك", bg: "bg-[#f0f6ff] dark:bg-[#0f2240]" },
-              { emoji: "👥", label: "مبني بتعاون الطلاب", desc: "كل سؤال يضيفه زميلك يزيد من دقة التحليلات ويفيد الجميع", bg: "bg-emerald-50 dark:bg-emerald-900/20" },
-              { emoji: "🔒", label: "بدون تسجيل دخول", desc: "ادخل وساهم أو استفِد مباشرة — لا حسابات ولا بيانات شخصية مطلوبة", bg: "bg-amber-50 dark:bg-amber-900/20" },
+              { emoji: "🔍", label: "تشخيص ذكي", desc: "نحلل أسئلة الاختبارات السابقة ونكشف لك الفصول الأكثر تكراراً ومستوى الصعوبة المتوقع", bg: "bg-[#f0f6ff] dark:bg-[#0a1628]" },
+              { emoji: "📋", label: "أسئلة نموذجية", desc: "نعرض لك نمط الأسئلة المتكررة وأسئلة نموذجية تساعدك تفهم طريقة الاختبار", bg: "bg-emerald-50 dark:bg-emerald-900/20" },
+              { emoji: "📚", label: "مصادر للمراجعة", desc: "مصادر شرح مرتبطة بكل فصل يشاركها زملاؤك — يوتيوب، ملخصات، وشروحات مجانية", bg: "bg-amber-50 dark:bg-amber-900/20" },
             ].map((item, i) => (
-              <div key={i} className="bg-white dark:bg-[#0f2240] rounded-2xl p-8 border border-slate-100 dark:border-[#1a3a6a]/40 shadow-sm hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5">
-                <div className={`w-14 h-14 ${item.bg} rounded-2xl flex items-center justify-center mb-5 text-2xl`}>
+              <div key={i} className="bg-white dark:bg-[#0a1628] rounded-2xl p-8 border border-slate-100 dark:border-[#1a3a6a]/40 shadow-sm hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5">
+                <div className={`w-14 h-14 ${item.bg} rounded-2xl flex items-center justify-center mb-5 text-2xl border border-slate-100 dark:border-[#1a3a6a]/30`}>
                   {item.emoji}
                 </div>
                 <p className="font-bold text-[#0f2240] dark:text-white text-lg mb-2">{item.label}</p>
@@ -193,7 +252,7 @@ export default function Landing() {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="py-20 sm:py-24 bg-[#f0f6ff] dark:bg-[#0f2240]">
+      <section id="faq" className="py-20 sm:py-24 bg-white dark:bg-[#0a1628]">
         <div className="max-w-2xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl sm:text-4xl font-bold text-[#0f2240] dark:text-white">

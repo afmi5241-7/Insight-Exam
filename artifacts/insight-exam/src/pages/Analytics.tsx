@@ -20,7 +20,6 @@ const diffColors: Record<string, string> = {
   "صعب": "#EF4444", "hard": "#EF4444",
 };
 
-// Blue-based chart palette — no purple/violet
 const CHART_COLORS = ["#2d6cc0", "#4a9eed", "#7ec8f0", "#1a4b8c", "#22C55E", "#F59E0B", "#EF4444"];
 
 interface ChapterOverview {
@@ -53,9 +52,14 @@ function CustomTooltip({ active, payload, label, dark }: any) {
   return (
     <div className={`rounded-xl px-4 py-3 shadow-xl text-sm border ${dark ? "bg-[#0f2240] border-[#1a3a6a]/60 text-slate-200" : "bg-white border-slate-100 text-slate-800"}`}>
       <p className="font-semibold mb-1">{label}</p>
-      {payload.map((p: any, i: number) => (
-        <p key={i} style={{ color: p.color }}>{p.name}: {p.value}</p>
-      ))}
+      {payload.map((p: any, i: number) => {
+        const pct = p.payload?.percentage;
+        return (
+          <p key={i} style={{ color: p.color }}>
+            {p.name}: {p.value}{pct !== undefined ? ` (${pct}%)` : ""}
+          </p>
+        );
+      })}
     </div>
   );
 }
@@ -66,6 +70,46 @@ function diffBadgeClass(diff: string) {
   return "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400";
 }
 
+const STAGES = [
+  { id: 1, emoji: "🔍", label: "التشخيص", sub: "اكتشف الفصول والمواضيع الأكثر أهمية" },
+  { id: 2, emoji: "📋", label: "السياق", sub: "تعرّف على نمط الأسئلة والأسئلة النموذجية" },
+  { id: 3, emoji: "📚", label: "المعالجة", sub: "ابدأ مراجعتك بالمصادر المناسبة" },
+];
+
+function StageStepper({ stage, setStage }: { stage: number; setStage: (s: number) => void }) {
+  return (
+    <div className="bg-white dark:bg-[#0f2240] rounded-2xl border border-slate-100 dark:border-[#1a3a6a]/40 shadow-sm p-5 mb-8">
+      <div className="flex items-center justify-between gap-2">
+        {STAGES.map((s, i) => (
+          <div key={s.id} className="flex items-center flex-1 min-w-0">
+            <button
+              onClick={() => setStage(s.id)}
+              className={`flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-3 px-3 sm:px-4 py-3 rounded-xl flex-1 text-center sm:text-right transition-all duration-200 ${
+                stage === s.id
+                  ? "bg-gradient-to-r from-[#2d6cc0] to-[#4a9eed] text-white shadow-md shadow-[#2d6cc0]/25"
+                  : "hover:bg-[#f0f6ff] dark:hover:bg-[#0a1628] text-slate-500 dark:text-slate-400"
+              }`}
+            >
+              <span className="text-xl flex-shrink-0">{s.emoji}</span>
+              <div className="min-w-0">
+                <p className={`font-bold text-sm leading-tight ${stage === s.id ? "text-white" : "text-[#0f2240] dark:text-slate-200"}`}>
+                  {s.label}
+                </p>
+                <p className={`text-xs mt-0.5 leading-tight hidden sm:block truncate ${stage === s.id ? "text-white/80" : "text-slate-400 dark:text-slate-500"}`}>
+                  {s.sub}
+                </p>
+              </div>
+            </button>
+            {i < STAGES.length - 1 && (
+              <ChevronLeft className="h-4 w-4 text-slate-300 dark:text-[#1a3a6a] mx-1 flex-shrink-0 rotate-180" />
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function Analytics() {
   const params = useParams<{ id: string }>();
   const courseId = parseInt(params.id);
@@ -73,6 +117,7 @@ export default function Analytics() {
   const [data, setData] = useState<Analytics | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [stage, setStage] = useState(1);
 
   useEffect(() => {
     if (isNaN(courseId)) { setError("معرف غير صالح"); setLoading(false); return; }
@@ -115,6 +160,12 @@ export default function Analytics() {
     difficultyDistribution, chaptersOverview, sourceLinks, recommendations,
   } = data;
 
+  const sourcesByChapter = sourceLinks.reduce<Record<string, { link: string; topic?: string }[]>>((acc, src) => {
+    if (!acc[src.chapter]) acc[src.chapter] = [];
+    acc[src.chapter].push({ link: src.link, topic: src.topic });
+    return acc;
+  }, {});
+
   return (
     <div className="min-h-screen flex flex-col bg-[#f0f6ff] dark:bg-[#0a1628] transition-colors duration-300">
       <Navbar />
@@ -128,7 +179,7 @@ export default function Analytics() {
         </div>
 
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-[#0f2240] dark:text-white">{course.name}</h1>
             <p className="text-slate-500 dark:text-slate-400 text-sm mt-1.5">{course.faculty} · {course.department}</p>
@@ -146,7 +197,10 @@ export default function Analytics() {
           <EmptyState courseId={courseId} />
         ) : (
           <>
-            {/* Summary Cards */}
+            {/* Stage Stepper */}
+            <StageStepper stage={stage} setStage={setStage} />
+
+            {/* Summary Cards — always visible */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
               <SummaryCard label="إجمالي الأسئلة" value={totalQuestions.toString()} icon={<BookOpen className="h-5 w-5 text-white" />} gradient="from-[#1a4b8c] to-[#2d6cc0]" />
               <SummaryCard label="عدد الفصول المغطاة" value={chaptersCovered.toString()} icon={<Target className="h-5 w-5 text-white" />} gradient="from-emerald-500 to-green-500" />
@@ -154,101 +208,82 @@ export default function Analytics() {
               <SummaryCard label="مستوى الصعوبة الغالب" value={dominantDifficulty} icon={<TrendingUp className="h-5 w-5 text-white" />} gradient="from-orange-500 to-amber-500" small />
             </div>
 
-            {/* Finals Chart */}
-            {finalsChapterFrequency.length > 0 && (
-              <ChartCard title="تكرار الفصول في اختبارات الفاينل 📋" className="mb-6">
-                <ResponsiveContainer width="100%" height={Math.max(220, finalsChapterFrequency.length * 42)}>
-                  <BarChart data={finalsChapterFrequency} layout="vertical" margin={{ right: 30, left: 8 }}>
-                    <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke={gridStroke} />
-                    <XAxis type="number" tick={{ fontSize: 11, fill: tickColor }} />
-                    <YAxis dataKey="chapter" type="category" width={110} tick={{ fontSize: 10, fill: tickColor }} tickFormatter={(v: string) => v.length > 16 ? v.slice(0, 16) + "…" : v} />
-                    <Tooltip content={<CustomTooltip dark={dark} />} />
-                    <Bar dataKey="count" name="عدد الأسئلة" radius={[0, 6, 6, 0]}>
-                      {finalsChapterFrequency.map((_, i) => {
-                        const maxCount = finalsChapterFrequency[0]?.count || 1;
-                        const intensity = 0.45 + 0.55 * (finalsChapterFrequency[i]?.count / maxCount);
-                        return <Cell key={i} fill={`rgba(26, 75, 140, ${intensity})`} />;
-                      })}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </ChartCard>
-            )}
+            {/* ── Stage 1: التشخيص ── */}
+            {stage === 1 && (
+              <div className="space-y-6 animate-in fade-in duration-300">
+                {finalsChapterFrequency.length > 0 && (
+                  <ChartCard title="تكرار الفصول في اختبارات الفاينل 📋">
+                    <ResponsiveContainer width="100%" height={Math.max(220, finalsChapterFrequency.length * 42)}>
+                      <BarChart data={finalsChapterFrequency} layout="vertical" margin={{ right: 50, left: 8 }}>
+                        <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke={gridStroke} />
+                        <XAxis type="number" tick={{ fontSize: 11, fill: tickColor }} />
+                        <YAxis dataKey="chapter" type="category" width={110} tick={{ fontSize: 10, fill: tickColor }} tickFormatter={(v: string) => v.length > 16 ? v.slice(0, 16) + "…" : v} />
+                        <Tooltip content={<CustomTooltip dark={dark} />} />
+                        <Bar dataKey="count" name="عدد الأسئلة" radius={[0, 6, 6, 0]}
+                          label={{ position: "right", fontSize: 10, fill: tickColor, formatter: (_: any, entry: any) => `${entry?.payload?.percentage ?? ""}%` }}
+                        >
+                          {finalsChapterFrequency.map((_, i) => {
+                            const maxCount = finalsChapterFrequency[0]?.count || 1;
+                            const intensity = 0.45 + 0.55 * (finalsChapterFrequency[i]?.count / maxCount);
+                            return <Cell key={i} fill={`rgba(26, 75, 140, ${intensity})`} />;
+                          })}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </ChartCard>
+                )}
 
-            {/* Midterms Chart */}
-            {midtermsChapterFrequency.length > 0 && (
-              <ChartCard title="تكرار الفصول في اختبارات الميد 📝" className="mb-6">
-                <ResponsiveContainer width="100%" height={Math.max(220, midtermsChapterFrequency.length * 42)}>
-                  <BarChart data={midtermsChapterFrequency} layout="vertical" margin={{ right: 30, left: 8 }}>
-                    <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke={gridStroke} />
-                    <XAxis type="number" tick={{ fontSize: 11, fill: tickColor }} />
-                    <YAxis dataKey="chapter" type="category" width={110} tick={{ fontSize: 10, fill: tickColor }} tickFormatter={(v: string) => v.length > 16 ? v.slice(0, 16) + "…" : v} />
-                    <Tooltip content={<CustomTooltip dark={dark} />} />
-                    <Bar dataKey="count" name="عدد الأسئلة" radius={[0, 6, 6, 0]}>
-                      {midtermsChapterFrequency.map((_, i) => {
-                        const maxCount = midtermsChapterFrequency[0]?.count || 1;
-                        const intensity = 0.45 + 0.55 * (midtermsChapterFrequency[i]?.count / maxCount);
-                        return <Cell key={i} fill={`rgba(74, 158, 237, ${intensity})`} />;
-                      })}
-                    </Bar>
-                  </BarChart>
-                </ResponsiveContainer>
-              </ChartCard>
-            )}
+                {midtermsChapterFrequency.length > 0 && (
+                  <ChartCard title="تكرار الفصول في اختبارات الميد 📝">
+                    <ResponsiveContainer width="100%" height={Math.max(220, midtermsChapterFrequency.length * 42)}>
+                      <BarChart data={midtermsChapterFrequency} layout="vertical" margin={{ right: 50, left: 8 }}>
+                        <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke={gridStroke} />
+                        <XAxis type="number" tick={{ fontSize: 11, fill: tickColor }} />
+                        <YAxis dataKey="chapter" type="category" width={110} tick={{ fontSize: 10, fill: tickColor }} tickFormatter={(v: string) => v.length > 16 ? v.slice(0, 16) + "…" : v} />
+                        <Tooltip content={<CustomTooltip dark={dark} />} />
+                        <Bar dataKey="count" name="عدد الأسئلة" radius={[0, 6, 6, 0]}
+                          label={{ position: "right", fontSize: 10, fill: tickColor, formatter: (_: any, entry: any) => `${entry?.payload?.percentage ?? ""}%` }}
+                        >
+                          {midtermsChapterFrequency.map((_, i) => {
+                            const maxCount = midtermsChapterFrequency[0]?.count || 1;
+                            const intensity = 0.45 + 0.55 * (midtermsChapterFrequency[i]?.count / maxCount);
+                            return <Cell key={i} fill={`rgba(74, 158, 237, ${intensity})`} />;
+                          })}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </ChartCard>
+                )}
 
-            {/* Type + Difficulty charts */}
-            <div className="grid md:grid-cols-2 gap-6 mb-8">
-              {typeDistribution.length > 0 && (
-                <ChartCard title="توزيع أنواع الأسئلة">
-                  <ResponsiveContainer width="100%" height={220}>
-                    <PieChart>
-                      <Pie
-                        data={typeDistribution.map(t => ({ ...t, name: t.label }))}
-                        dataKey="count" nameKey="name"
-                        cx="50%" cy="50%" outerRadius={80}
-                        label={({ name, percentage }: any) => `${name} ${percentage}%`}
-                        labelLine={false}
-                      >
-                        {typeDistribution.map((_, i) => (
-                          <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip formatter={(v: any, n: any) => [v, n]} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </ChartCard>
-              )}
-              {difficultyDistribution.length > 0 && (
-                <ChartCard title="توزيع مستوى الصعوبة">
-                  <ResponsiveContainer width="100%" height={220}>
-                    <BarChart data={difficultyDistribution.map(d => ({ ...d, name: d.label }))} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
-                      <XAxis dataKey="name" tick={{ fontSize: 12, fill: tickColor }} />
-                      <YAxis tick={{ fontSize: 11, fill: tickColor }} />
-                      <Tooltip content={<CustomTooltip dark={dark} />} />
-                      <Bar dataKey="count" name="عدد الأسئلة" radius={[6, 6, 0, 0]}>
-                        {difficultyDistribution.map((d, i) => (
-                          <Cell key={i} fill={diffColors[d.difficulty] ?? "#2d6cc0"} />
-                        ))}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </ChartCard>
-              )}
-            </div>
+                {difficultyDistribution.length > 0 && (
+                  <ChartCard title="توزيع مستوى الصعوبة">
+                    <ResponsiveContainer width="100%" height={220}>
+                      <BarChart data={difficultyDistribution.map(d => ({ ...d, name: d.label }))} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
+                        <XAxis dataKey="name" tick={{ fontSize: 12, fill: tickColor }} />
+                        <YAxis tick={{ fontSize: 11, fill: tickColor }} />
+                        <Tooltip content={<CustomTooltip dark={dark} />} />
+                        <Bar dataKey="count" name="عدد الأسئلة" radius={[6, 6, 0, 0]}
+                          label={{ position: "top", fontSize: 11, fill: tickColor, formatter: (_: any, entry: any) => `${entry?.payload?.percentage ?? ""}%` }}
+                        >
+                          {difficultyDistribution.map((d, i) => (
+                            <Cell key={i} fill={diffColors[d.difficulty] ?? "#2d6cc0"} />
+                          ))}
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </ChartCard>
+                )}
 
-            {/* Chapter List */}
-            {chaptersOverview.length > 0 && (
-              <div className="bg-white dark:bg-[#0f2240] rounded-2xl border border-slate-100 dark:border-[#1a3a6a]/40 shadow-sm mb-8 overflow-hidden">
-                <div className="px-6 py-5 border-b border-slate-100 dark:border-[#1a3a6a]/40">
-                  <h3 className="font-bold text-[#0f2240] dark:text-white text-lg">قائمة الفصول</h3>
-                  <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">انقر على أي فصل لعرض تحليلاته التفصيلية</p>
-                </div>
-                <div className="divide-y divide-slate-50 dark:divide-[#1a3a6a]/20">
-                  {chaptersOverview.map((ch) => (
-                    <div key={ch.chapter}>
-                      <Link href={`/analytics/${courseId}/chapter/${encodeURIComponent(ch.chapter)}`}>
-                        <div className="group flex items-center gap-4 px-6 py-4 hover:bg-[#f0f6ff] dark:hover:bg-[#0a1628]/50 transition-colors cursor-pointer">
+                {chaptersOverview.length > 0 && (
+                  <div className="bg-white dark:bg-[#0f2240] rounded-2xl border border-slate-100 dark:border-[#1a3a6a]/40 shadow-sm overflow-hidden">
+                    <div className="px-6 py-5 border-b border-slate-100 dark:border-[#1a3a6a]/40">
+                      <h3 className="font-bold text-[#0f2240] dark:text-white text-lg">أهمية الفصول</h3>
+                      <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">مرتبة حسب تكرارها في الاختبارات</p>
+                    </div>
+                    <div className="divide-y divide-slate-50 dark:divide-[#1a3a6a]/20">
+                      {chaptersOverview.map((ch) => (
+                        <div key={ch.chapter} className="flex items-center gap-4 px-6 py-4">
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-3 flex-wrap">
                               <span className="font-semibold text-[#0f2240] dark:text-slate-200 text-sm">{ch.chapter}</span>
@@ -258,67 +293,195 @@ export default function Analytics() {
                                 </span>
                               )}
                             </div>
-                          </div>
-                          <div className="flex items-center gap-4 flex-shrink-0">
-                            <div className="text-right">
-                              <p className="font-bold text-[#2d6cc0] text-sm">{ch.count} سؤال</p>
-                              <p className="text-xs text-slate-400">{ch.percentage}% من الإجمالي</p>
+                            <div className="mt-2 h-1.5 bg-slate-100 dark:bg-[#0a1628] rounded-full overflow-hidden">
+                              <div className="h-full bg-gradient-to-r from-[#2d6cc0] to-[#4a9eed] rounded-full" style={{ width: `${ch.percentage}%` }} />
                             </div>
-                            <ChevronLeft className="h-4 w-4 text-slate-300 dark:text-[#1a3a6a] group-hover:text-[#2d6cc0] transition-colors" />
+                          </div>
+                          <div className="text-right flex-shrink-0">
+                            <p className="font-bold text-[#2d6cc0] text-sm">{ch.count} ({ch.percentage}%)</p>
                           </div>
                         </div>
-                      </Link>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                )}
               </div>
             )}
 
-            {/* Recommendations */}
-            {recommendations.length > 0 && (
-              <div className="bg-white dark:bg-[#0f2240] rounded-2xl border border-slate-100 dark:border-[#1a3a6a]/40 shadow-sm p-7 mb-6">
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-sm">
-                    <Lightbulb className="h-5 w-5 text-white" />
-                  </div>
-                  <h2 className="font-bold text-[#0f2240] dark:text-white text-lg">توصيات المراجعة</h2>
-                </div>
-                <div className="grid sm:grid-cols-2 gap-4">
-                  {recommendations.map((rec, i) => (
-                    <div key={i} className="flex items-start gap-3 p-4 bg-[#f0f6ff] dark:bg-[#0a1628] rounded-xl border border-[#d0e4f8] dark:border-[#1a3a6a]/40">
-                      <div className="w-6 h-6 bg-gradient-to-br from-[#2d6cc0] to-[#4a9eed] text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">{i + 1}</div>
-                      <p className="text-[#0f2240] dark:text-slate-300 text-sm leading-relaxed">{rec}</p>
+            {/* ── Stage 2: السياق ── */}
+            {stage === 2 && (
+              <div className="space-y-6 animate-in fade-in duration-300">
+                {typeDistribution.length > 0 && (
+                  <ChartCard title="توزيع أنواع الأسئلة">
+                    <ResponsiveContainer width="100%" height={260}>
+                      <PieChart>
+                        <Pie
+                          data={typeDistribution.map(t => ({ ...t, name: t.label }))}
+                          dataKey="count" nameKey="name"
+                          cx="50%" cy="50%" outerRadius={90}
+                          label={({ name, value, payload }: any) => `${name}: ${value} (${payload?.percentage ?? 0}%)`}
+                          labelLine={false}
+                        >
+                          {typeDistribution.map((_, i) => (
+                            <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip formatter={(v: any, n: any, props: any) => [`${v} (${props.payload?.percentage ?? 0}%)`, n]} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </ChartCard>
+                )}
+
+                {chaptersOverview.length > 0 && (
+                  <div className="bg-white dark:bg-[#0f2240] rounded-2xl border border-slate-100 dark:border-[#1a3a6a]/40 shadow-sm overflow-hidden">
+                    <div className="px-6 py-5 border-b border-slate-100 dark:border-[#1a3a6a]/40">
+                      <h3 className="font-bold text-[#0f2240] dark:text-white text-lg">الأسئلة النموذجية بالفصل</h3>
+                      <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">انقر على أي فصل لعرض أسئلته النموذجية والتفصيلية</p>
                     </div>
-                  ))}
-                </div>
+                    <div className="divide-y divide-slate-50 dark:divide-[#1a3a6a]/20">
+                      {chaptersOverview.map((ch) => (
+                        <div key={ch.chapter}>
+                          <Link href={`/analytics/${courseId}/chapter/${encodeURIComponent(ch.chapter)}`}>
+                            <div className="group flex items-center gap-4 px-6 py-4 hover:bg-[#f0f6ff] dark:hover:bg-[#0a1628]/50 transition-colors cursor-pointer">
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-3 flex-wrap">
+                                  <span className="font-semibold text-[#0f2240] dark:text-slate-200 text-sm">{ch.chapter}</span>
+                                  {ch.dominantDifficulty && (
+                                    <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${diffBadgeClass(ch.dominantDifficulty)}`}>
+                                      {ch.dominantDiffPct}% {ch.dominantDifficulty}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-4 flex-shrink-0">
+                                <div className="text-right">
+                                  <p className="font-bold text-[#2d6cc0] text-sm">{ch.count} سؤال ({ch.percentage}%)</p>
+                                </div>
+                                <ChevronLeft className="h-4 w-4 text-slate-300 dark:text-[#1a3a6a] group-hover:text-[#2d6cc0] transition-colors" />
+                              </div>
+                            </div>
+                          </Link>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {recommendations.length > 0 && (
+                  <div className="bg-white dark:bg-[#0f2240] rounded-2xl border border-slate-100 dark:border-[#1a3a6a]/40 shadow-sm p-7">
+                    <div className="flex items-center gap-3 mb-5">
+                      <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-sm">
+                        <Lightbulb className="h-5 w-5 text-white" />
+                      </div>
+                      <h2 className="font-bold text-[#0f2240] dark:text-white text-lg">توصيات المراجعة</h2>
+                    </div>
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      {recommendations.map((rec, i) => (
+                        <div key={i} className="flex items-start gap-3 p-4 bg-[#f0f6ff] dark:bg-[#0a1628] rounded-xl border border-[#d0e4f8] dark:border-[#1a3a6a]/40">
+                          <div className="w-6 h-6 bg-gradient-to-br from-[#2d6cc0] to-[#4a9eed] text-white rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">{i + 1}</div>
+                          <p className="text-[#0f2240] dark:text-slate-300 text-sm leading-relaxed">{rec}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
 
-            {/* Source Links */}
-            {sourceLinks.length > 0 && (
-              <div className="bg-white dark:bg-[#0f2240] rounded-2xl border border-slate-100 dark:border-[#1a3a6a]/40 shadow-sm p-7">
-                <div className="flex items-center gap-3 mb-5">
-                  <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-green-500 rounded-xl flex items-center justify-center shadow-sm">
-                    <BookOpen className="h-5 w-5 text-white" />
+            {/* ── Stage 3: المعالجة ── */}
+            {stage === 3 && (
+              <div className="space-y-6 animate-in fade-in duration-300">
+                {sourceLinks.length === 0 ? (
+                  <div className="bg-white dark:bg-[#0f2240] rounded-2xl border-2 border-dashed border-slate-200 dark:border-[#1a3a6a]/40 p-16 text-center">
+                    <div className="w-20 h-20 bg-[#f0f6ff] dark:bg-[#0a1628] rounded-full flex items-center justify-center mx-auto mb-5 text-4xl">📚</div>
+                    <h3 className="font-bold text-[#0f2240] dark:text-slate-300 mb-2 text-lg">لا توجد مصادر حتى الآن</h3>
+                    <p className="text-slate-400 dark:text-slate-500 text-sm mb-6 leading-relaxed">ساهم بإضافة روابط شرح مفيدة عند إدخال أسئلة جديدة</p>
+                    <Link href="/submit" className="inline-flex items-center gap-2 bg-gradient-to-r from-[#2d6cc0] to-[#4a9eed] text-white px-6 py-2.5 rounded-full font-semibold text-sm hover:shadow-lg transition-all">
+                      <PlusCircle className="h-4 w-4" />أضف سؤالاً مع رابط
+                    </Link>
                   </div>
-                  <div>
-                    <h2 className="font-bold text-[#0f2240] dark:text-white text-lg">مصادر مفيدة 📚</h2>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">شاركها زملاؤك</p>
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  {sourceLinks.map((src, i) => (
-                    <div key={i} className="flex items-start gap-3 p-4 bg-[#f0f6ff] dark:bg-[#0a1628] rounded-xl border border-[#d0e4f8] dark:border-[#1a3a6a]/40">
-                      <ExternalLink className="h-4 w-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mb-1 font-medium">{src.chapter}{src.topic ? ` · ${src.topic}` : ""}</p>
-                        <a href={src.link} target="_blank" rel="noopener noreferrer" className="text-[#2d6cc0] dark:text-[#4a9eed] text-sm hover:underline break-all font-medium" dir="ltr">{src.link}</a>
+                ) : Object.keys(sourcesByChapter).length > 0 ? (
+                  Object.entries(sourcesByChapter).map(([chapterName, links]) => (
+                    <div key={chapterName} className="bg-white dark:bg-[#0f2240] rounded-2xl border border-slate-100 dark:border-[#1a3a6a]/40 shadow-sm overflow-hidden">
+                      <div className="px-6 py-4 border-b border-slate-100 dark:border-[#1a3a6a]/40 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-green-500 rounded-lg flex items-center justify-center shadow-sm">
+                            <BookOpen className="h-4 w-4 text-white" />
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-[#0f2240] dark:text-white text-sm">{chapterName}</h3>
+                            <p className="text-xs text-slate-400">{links.length} {links.length === 1 ? "مصدر" : "مصادر"}</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="p-4 grid sm:grid-cols-2 gap-3">
+                        {links.map((src, i) => {
+                          const isYT = src.link.includes("youtube.com") || src.link.includes("youtu.be");
+                          const isTG = src.link.includes("t.me") || src.link.includes("telegram");
+                          const icon = isYT ? "🎥" : isTG ? "✈️" : "🔗";
+                          const border = isYT
+                            ? "border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/10"
+                            : isTG
+                            ? "border-[#4a9eed]/30 dark:border-[#2d6cc0]/40 bg-[#f0f6ff] dark:bg-[#0a1e3d]"
+                            : "border-slate-200 dark:border-[#1a3a6a]/40 bg-slate-50 dark:bg-[#0a1628]";
+                          return (
+                            <div key={i} className={`flex items-center gap-3 p-4 rounded-xl border ${border}`}>
+                              <span className="text-2xl flex-shrink-0">{icon}</span>
+                              <div className="flex-1 min-w-0">
+                                {src.topic && <p className="text-xs text-slate-500 dark:text-slate-400 mb-0.5 font-medium">{src.topic}</p>}
+                                <p className="text-xs text-slate-600 dark:text-slate-400 truncate font-medium" dir="ltr">{src.link}</p>
+                              </div>
+                              <a href={src.link} target="_blank" rel="noopener noreferrer" className="flex-shrink-0 bg-gradient-to-r from-[#2d6cc0] to-[#4a9eed] text-white text-xs font-semibold px-3 py-1.5 rounded-full hover:shadow-md transition-all whitespace-nowrap">
+                                فتح
+                              </a>
+                            </div>
+                          );
+                        })}
                       </div>
                     </div>
-                  ))}
-                </div>
+                  ))
+                ) : (
+                  <div className="bg-white dark:bg-[#0f2240] rounded-2xl border border-slate-100 dark:border-[#1a3a6a]/40 shadow-sm p-7">
+                    <div className="flex items-center gap-3 mb-5">
+                      <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-green-500 rounded-xl flex items-center justify-center shadow-sm">
+                        <BookOpen className="h-5 w-5 text-white" />
+                      </div>
+                      <div>
+                        <h2 className="font-bold text-[#0f2240] dark:text-white text-lg">مصادر مفيدة 📚</h2>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">شاركها زملاؤك</p>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      {sourceLinks.map((src, i) => (
+                        <div key={i} className="flex items-start gap-3 p-4 bg-[#f0f6ff] dark:bg-[#0a1628] rounded-xl border border-[#d0e4f8] dark:border-[#1a3a6a]/40">
+                          <ExternalLink className="h-4 w-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs text-slate-500 dark:text-slate-400 mb-1 font-medium">{src.chapter}{src.topic ? ` · ${src.topic}` : ""}</p>
+                            <a href={src.link} target="_blank" rel="noopener noreferrer" className="text-[#2d6cc0] dark:text-[#4a9eed] text-sm hover:underline break-all font-medium" dir="ltr">{src.link}</a>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
+
+            {/* Navigation between stages */}
+            <div className="flex justify-between mt-8">
+              {stage > 1 ? (
+                <button onClick={() => setStage(stage - 1)} className="flex items-center gap-2 text-sm font-semibold text-[#2d6cc0] dark:text-[#4a9eed] hover:gap-3 transition-all">
+                  <ChevronRight className="h-4 w-4" />
+                  {STAGES[stage - 2].emoji} {STAGES[stage - 2].label}
+                </button>
+              ) : <div />}
+              {stage < 3 ? (
+                <button onClick={() => setStage(stage + 1)} className="flex items-center gap-2 text-sm font-semibold text-[#2d6cc0] dark:text-[#4a9eed] hover:gap-3 transition-all">
+                  {STAGES[stage].emoji} {STAGES[stage].label}
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+              ) : <div />}
+            </div>
           </>
         )}
       </main>
@@ -371,6 +534,7 @@ function LoadingSkeleton() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[1,2,3,4].map(i => <div key={i} className="bg-white dark:bg-[#0f2240] rounded-2xl border border-slate-100 dark:border-[#1a3a6a]/40 p-5 h-24" />)}
       </div>
+      <div className="bg-white dark:bg-[#0f2240] rounded-2xl border border-slate-100 dark:border-[#1a3a6a]/40 p-6 h-16 rounded-2xl" />
       <div className="bg-white dark:bg-[#0f2240] rounded-2xl border border-slate-100 dark:border-[#1a3a6a]/40 p-6 h-64" />
       <div className="bg-white dark:bg-[#0f2240] rounded-2xl border border-slate-100 dark:border-[#1a3a6a]/40 p-6 h-64" />
     </div>

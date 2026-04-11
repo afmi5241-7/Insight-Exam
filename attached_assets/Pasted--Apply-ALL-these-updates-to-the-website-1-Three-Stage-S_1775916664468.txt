@@ -1,0 +1,70 @@
+---
+
+## Apply ALL these updates to the website:
+
+### 1. Three-Stage Structure for Course Analytics (تشخيص → سياق → معالجة)
+
+When a user opens a course in the analytics section, organize the content into 3 clearly labeled stages with a horizontal stepper/progress bar at the top that the user can click between:
+
+**Stage 1: "التشخيص 🔍" (Diagnosis)**
+- Show the dashboards: chapter frequency, difficulty distribution, chapter importance in finals and midterms
+- Subtitle: "اكتشف الفصول والمواضيع الأكثر أهمية في اختباراتك"
+
+**Stage 2: "السياق 📋" (Context)**
+- Show the pattern-based sample questions and model questions for each chapter
+- Show question type distribution
+- Subtitle: "تعرّف على نمط الأسئلة والأسئلة النموذجية المتكررة"
+
+**Stage 3: "المعالجة 📚" (Remediation)**
+- Show all shared resource links organized by chapter
+- Subtitle: "ابدأ مراجعتك بالمصادر المناسبة لكل فصل"
+
+Display these 3 stages as a clickable horizontal stepper at the top of the course page (التشخيص → السياق → المعالجة). This represents the SIT Division methodology used in the project.
+
+### 2. SIT Methodology Section on Landing Page
+
+Add a new section on the landing page called "كيف نحلل الأسئلة؟" that explains the methodology:
+
+Title: "مبني على منهجية الابتكار SIT"
+Subtitle: "التقسيم والتوحيد — Systematic Inventive Thinking"
+
+Show 3 connected cards in a horizontal flow with arrows between them:
+
+- **Card 1 — التقسيم (Division):** "نقسّم أسئلة الاختبارات السابقة إلى عناصرها الأساسية — الفصل، نوع السؤال، مستوى الصعوبة، وفترة الاختبار"
+- **Card 2 — التحليل (Analysis):** "نحلل الأنماط المخفية في البيانات لاكتشاف التكرارات والأولويات"
+- **Card 3 — التوحيد (Unification):** "نوحّد النتائج مع مصادر المراجعة في واجهة واحدة تعطيك خطة مراجعة ذكية"
+
+Style it as a clean horizontal flow diagram with arrows. Place this section between the "كيف يعمل" section and the "ماذا تريد أن تفعل" section.
+
+### 3. Show Percentages in All Dashboards
+
+In all dashboard charts across the entire analytics section, show BOTH the raw count AND the percentage. For example, if Chapter 3 has 7 out of 20 total questions, display "7 (35%)" not just "7". Apply this to all bar charts, donut charts, summary cards, and tooltips.
+
+### 4. Add English Tagline
+
+Add "Don't Study Harder... Study Smarter." below the Arabic tagline "حوّل مراجعتك من عشوائية إلى ذكية" on the hero section. Style it in smaller font, italic, semi-transparent white text.
+
+### 5. Update "لماذا Insight Exam؟" Section
+
+**Badge:** Keep "لماذا Insight Exam؟"
+
+**Main heading:** Change to "حوّل مراجعتك من عشوائية إلى ذكية"
+
+**Description paragraph:** Change to:
+"يعاني الطلاب من المراجعة العشوائية — ساعات طويلة في دراسة المنهج كاملاً دون معرفة ما يركّز عليه الاختبار. Insight Exam يحل هذه المشكلة بتحليل أنماط الاختبارات وكشف الموضوعات ذات الأولوية، فتعرف أين تركّز جهدك وتبدأ مراجعتك بثقة."
+
+**Three cards — update text:**
+
+**Card 1 (right) — Icon: 🔍**
+- Title: "تشخيص ذكي"
+- Description: "نحلل أسئلة الاختبارات السابقة ونكشف لك الفصول الأكثر تكراراً ومستوى الصعوبة المتوقع"
+
+**Card 2 (middle) — Icon: 📋**
+- Title: "أسئلة نموذجية"
+- Description: "نعرض لك نمط الأسئلة المتكررة وأسئلة نموذجية تساعدك تفهم طريقة الاختبار"
+
+**Card 3 (left) — Icon: 📚**
+- Title: "مصادر للمراجعة"
+- Description: "مصادر شرح مرتبطة بكل فصل يشاركها زملاؤك — يوتيوب، ملخصات، وشروحات مجانية"
+
+---
