@@ -7,6 +7,9 @@ import { logger } from "./lib/logger";
 
 const app: Express = express();
 
+// Trust the Replit proxy (HTTPS termination happens at the proxy layer)
+app.set("trust proxy", 1);
+
 app.use(
   pinoHttp({
     logger,
@@ -38,6 +41,10 @@ app.use(express.urlencoded({ extended: true }));
 
 const sessionSecret = process.env.SESSION_SECRET ?? "insight-exam-secret-fallback";
 
+// In Replit's proxy environment the connection is always HTTPS at the edge,
+// so cookies must be SameSite=None + Secure to work inside the preview iframe.
+const inReplit = !!process.env.REPL_ID;
+
 app.use(
   session({
     secret: sessionSecret,
@@ -45,7 +52,8 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: inReplit || process.env.NODE_ENV === "production",
+      sameSite: inReplit ? "none" : "lax",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     },
   }),
