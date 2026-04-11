@@ -3,6 +3,7 @@ import { Link } from "wouter";
 import { Search, BookOpen, BarChart2, ChevronLeft, ChevronDown, Building2, GraduationCap, FileQuestion, Users } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { COLLEGE_DEPARTMENTS } from "@/lib/collegeDepts";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -57,17 +58,16 @@ const selectClass = "w-full border border-slate-200 dark:border-[#1a3a6a]/60 rou
 export default function Browse() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [faculties, setFaculties] = useState<string[]>([]);
-  const [departments, setDepartments] = useState<string[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
 
   const [faculty, setFaculty] = useState("");
   const [department, setDepartment] = useState("");
+  const [debDepartment, setDebDepartment] = useState("");
   const [search, setSearch] = useState("");
   const [debSearch, setDebSearch] = useState("");
 
   const [loadingStats, setLoadingStats] = useState(true);
   const [loadingFaculties, setLoadingFaculties] = useState(true);
-  const [loadingDepts, setLoadingDepts] = useState(false);
   const [loadingCourses, setLoadingCourses] = useState(false);
 
   useEffect(() => {
@@ -81,12 +81,9 @@ export default function Browse() {
   }, []);
 
   useEffect(() => {
-    if (!faculty) { setDepartments([]); setDepartment(""); setCourses([]); return; }
-    setLoadingDepts(true);
     setDepartment("");
+    setDebDepartment("");
     setCourses([]);
-    fetch(`${BASE}/api/departments?faculty=${encodeURIComponent(faculty)}`, { credentials: "include" })
-      .then(r => r.json()).then(data => setDepartments(Array.isArray(data) ? data : [])).catch(() => setDepartments([])).finally(() => setLoadingDepts(false));
   }, [faculty]);
 
   useEffect(() => {
@@ -95,12 +92,21 @@ export default function Browse() {
   }, [search]);
 
   useEffect(() => {
-    if (!faculty || !department) { setCourses([]); return; }
+    if (COLLEGE_DEPARTMENTS[faculty]) {
+      setDebDepartment(department);
+    } else {
+      const t = setTimeout(() => setDebDepartment(department), 500);
+      return () => clearTimeout(t);
+    }
+  }, [faculty, department]);
+
+  useEffect(() => {
+    if (!faculty || !debDepartment) { setCourses([]); return; }
     setLoadingCourses(true);
-    const params = new URLSearchParams({ faculty, department });
+    const params = new URLSearchParams({ faculty, department: debDepartment });
     fetch(`${BASE}/api/courses?${params}`, { credentials: "include" })
       .then(r => r.json()).then(data => setCourses(Array.isArray(data) ? data : [])).catch(() => setCourses([])).finally(() => setLoadingCourses(false));
-  }, [faculty, department]);
+  }, [faculty, debDepartment]);
 
   const filteredCourses = courses.filter(c =>
     !debSearch || c.name.toLowerCase().includes(debSearch.toLowerCase())
@@ -177,25 +183,39 @@ export default function Browse() {
 
           {faculty && (
             <div className="animate-in fade-in slide-in-from-top-2 duration-200">
-              <div className="relative">
-                <Building2 className="absolute top-1/2 -translate-y-1/2 right-3.5 h-4 w-4 text-slate-400 pointer-events-none" />
-                <select
-                  value={department}
-                  onChange={e => setDepartment(e.target.value)}
-                  className={`${selectClass} pr-10`}
-                  disabled={loadingDepts}
-                >
-                  <option value="">{loadingDepts ? "جارٍ التحميل..." : "اختر القسم..."}</option>
-                  {departments.map(d => <option key={d} value={d}>{d}</option>)}
-                </select>
-                <ChevronDown className="absolute top-1/2 -translate-y-1/2 left-3.5 h-4 w-4 text-slate-400 pointer-events-none" />
-              </div>
+              {COLLEGE_DEPARTMENTS[faculty] ? (
+                <div className="relative">
+                  <Building2 className="absolute top-1/2 -translate-y-1/2 right-3.5 h-4 w-4 text-slate-400 pointer-events-none" />
+                  <select
+                    value={department}
+                    onChange={e => setDepartment(e.target.value)}
+                    className={`${selectClass} pr-10`}
+                  >
+                    <option value="">اختر القسم...</option>
+                    {COLLEGE_DEPARTMENTS[faculty].map(d => (
+                      <option key={d} value={d}>{d}</option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute top-1/2 -translate-y-1/2 left-3.5 h-4 w-4 text-slate-400 pointer-events-none" />
+                </div>
+              ) : (
+                <div className="relative">
+                  <Building2 className="absolute top-1/2 -translate-y-1/2 right-3.5 h-4 w-4 text-slate-400 pointer-events-none" />
+                  <input
+                    type="text"
+                    value={department}
+                    onChange={e => setDepartment(e.target.value)}
+                    placeholder="اكتب اسم قسمك"
+                    className="w-full border border-slate-200 dark:border-[#1a3a6a]/60 rounded-xl py-3 pr-10 pl-4 text-sm bg-white dark:bg-[#0a1628] dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-[#2d6cc0]/40 focus:border-[#4a9eed] placeholder:text-slate-400 transition-all"
+                  />
+                </div>
+              )}
             </div>
           )}
         </div>
 
         {/* Course Results */}
-        {department && (
+        {debDepartment && (
           <div className="animate-in fade-in slide-in-from-top-2 duration-300">
             <div className="relative mb-5">
               <Search className="absolute top-1/2 -translate-y-1/2 right-4 h-4 w-4 text-slate-400 pointer-events-none" />

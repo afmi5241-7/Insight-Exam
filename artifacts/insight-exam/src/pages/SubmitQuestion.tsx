@@ -1,8 +1,9 @@
 import { useState, useRef } from "react";
 import { Link } from "wouter";
-import { CheckCircle2, Upload, X, ArrowRight, ArrowLeft, Lightbulb } from "lucide-react";
+import { CheckCircle2, Upload, X, ArrowRight, ArrowLeft, Lightbulb, ChevronDown } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { COLLEGE_DEPARTMENTS } from "@/lib/collegeDepts";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
@@ -245,28 +246,49 @@ export default function SubmitQuestion() {
               <label className={labelClass}>
                 اسم الكلية <span className="text-red-500">*</span>
               </label>
-              <select
-                value={step1.faculty}
-                onChange={e => setStep1(p => ({ ...p, faculty: e.target.value }))}
-                className={inputClass}
-              >
-                <option value="">اختر الكلية...</option>
-                {FACULTIES.map(f => <option key={f} value={f}>{f}</option>)}
-              </select>
+              <div className="relative">
+                <select
+                  value={step1.faculty}
+                  onChange={e => setStep1(p => ({ ...p, faculty: e.target.value, department: "" }))}
+                  className={`${inputClass} appearance-none`}
+                >
+                  <option value="">اختر الكلية...</option>
+                  {FACULTIES.map(f => <option key={f} value={f}>{f}</option>)}
+                </select>
+                <ChevronDown className="absolute top-1/2 -translate-y-1/2 left-3.5 h-4 w-4 text-slate-400 pointer-events-none" />
+              </div>
             </div>
 
-            <div>
-              <label className={labelClass}>
-                القسم <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                value={step1.department}
-                onChange={e => setStep1(p => ({ ...p, department: e.target.value }))}
-                placeholder="مثال: قسم علوم الحاسب"
-                className={inputClass}
-              />
-            </div>
+            {step1.faculty && (
+              <div className="animate-in fade-in slide-in-from-top-2 duration-200">
+                <label className={labelClass}>
+                  القسم <span className="text-red-500">*</span>
+                </label>
+                {COLLEGE_DEPARTMENTS[step1.faculty] ? (
+                  <div className="relative">
+                    <select
+                      value={step1.department}
+                      onChange={e => setStep1(p => ({ ...p, department: e.target.value }))}
+                      className={`${inputClass} appearance-none`}
+                    >
+                      <option value="">اختر القسم...</option>
+                      {COLLEGE_DEPARTMENTS[step1.faculty].map(d => (
+                        <option key={d} value={d}>{d}</option>
+                      ))}
+                    </select>
+                    <ChevronDown className="absolute top-1/2 -translate-y-1/2 left-3.5 h-4 w-4 text-slate-400 pointer-events-none" />
+                  </div>
+                ) : (
+                  <input
+                    type="text"
+                    value={step1.department}
+                    onChange={e => setStep1(p => ({ ...p, department: e.target.value }))}
+                    placeholder="اكتب اسم قسمك"
+                    className={inputClass}
+                  />
+                )}
+              </div>
+            )}
 
             <div>
               <label className={labelClass}>
