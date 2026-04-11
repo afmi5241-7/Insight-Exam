@@ -58,7 +58,7 @@ export default function Landing() {
               className="group flex items-center justify-center gap-2 bg-white/15 backdrop-blur-sm border border-white/30 text-white hover:bg-white/25 px-8 py-4 rounded-full font-bold text-lg transition-all hover:-translate-y-1 hover:shadow-xl"
             >
               <BarChart2 className="h-5 w-5" />
-              استعرض التحليلات
+              استكشف التحليلات
             </Link>
           </div>
         </div>
@@ -140,7 +140,7 @@ export default function Landing() {
                 emoji: "🔬",
                 title: "التحليل",
                 sub: "Analysis",
-                desc: "نحلل الأنماط المخفية في البيانات لاكتشاف التكرارات والأولويات التي تستحق تركيزك",
+                desc: "نحلل الأنماط المخفية في الأسئلة لاكتشاف التكرارات والأولويات التي تستحق تركيزك",
                 color: "from-[#2d6cc0] to-[#4a9eed]",
               },
               {

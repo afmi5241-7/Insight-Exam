@@ -1,14 +1,24 @@
 import { Router, type IRouter } from "express";
 import { db, questionsTable, coursesTable } from "@workspace/db";
 import { eq } from "drizzle-orm";
+import bcrypt from "bcryptjs";
 
 const router: IRouter = Router();
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD ?? "admin2024";
+// Password is bcrypt-hashed. Default hash corresponds to "Insight@2026#Exam".
+// Override by setting ADMIN_PASSWORD_HASH env variable.
+const ADMIN_PASSWORD_HASH =
+  process.env.ADMIN_PASSWORD_HASH ??
+  "$2b$12$xQkuoGEswtQR6zpTeVpq9e9k91rlIBoQ3bDoUaigV/w/abhSZIqBK";
 
-router.post("/admin/verify", (req, res): void => {
+router.post("/admin/verify", async (req, res): Promise<void> => {
   const { password } = req.body;
-  if (password === ADMIN_PASSWORD) {
+  if (!password || typeof password !== "string") {
+    res.status(400).json({ error: "كلمة المرور مطلوبة" });
+    return;
+  }
+  const ok = await bcrypt.compare(password, ADMIN_PASSWORD_HASH);
+  if (ok) {
     (req.session as any).isAdmin = true;
     res.json({ ok: true });
   } else {
@@ -17,7 +27,7 @@ router.post("/admin/verify", (req, res): void => {
 });
 
 router.post("/admin/logout", (req, res): void => {
-  (req.session as any).isAdmin = false;
+  req.session.destroy(() => {});
   res.json({ ok: true });
 });
 
@@ -60,20 +70,21 @@ router.get("/admin/questions", async (req, res): Promise<void> => {
     .where(eq(questionsTable.status, filterStatus))
     .orderBy(questionsTable.createdAt);
 
-  const pendingCount = await db
+  const pendingRows = await db
     .select({ id: questionsTable.id })
     .from(questionsTable)
     .where(eq(questionsTable.status, "pending"));
 
-  res.json({ questions: rows, pendingCount: pendingCount.length });
+  res.json({ questions: rows, pendingCount: pendingRows.length });
 });
 
 router.patch("/admin/questions/:id/status", async (req, res): Promise<void> => {
   if (!requireAdmin(req, res)) return;
 
   const id = parseInt(req.params.id as string);
-  const { status } = req.body;
+  if (isNaN(id)) { res.status(400).json({ error: "معرف غير صالح" }); return; }
 
+  const { status } = req.body;
   if (!["approved", "rejected", "pending"].includes(status)) {
     res.status(400).json({ error: "حالة غير صالحة" });
     return;
@@ -91,6 +102,26 @@ router.patch("/admin/questions/:id/status", async (req, res): Promise<void> => {
   }
 
   res.json({ ok: true, status: updated.status });
+});
+
+// Permanent delete — removes the question from the database entirely
+router.delete("/admin/questions/:id", async (req, res): Promise<void> => {
+  if (!requireAdmin(req, res)) return;
+
+  const id = parseInt(req.params.id as string);
+  if (isNaN(id)) { res.status(400).json({ error: "معرف غير صالح" }); return; }
+
+  const [deleted] = await db
+    .delete(questionsTable)
+    .where(eq(questionsTable.id, id))
+    .returning();
+
+  if (!deleted) {
+    res.status(404).json({ error: "السؤال غير موجود" });
+    return;
+  }
+
+  res.json({ ok: true });
 });
 
 export default router;

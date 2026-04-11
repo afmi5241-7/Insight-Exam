@@ -109,7 +109,8 @@ export default function Browse() {
   }, [faculty, debDepartment]);
 
   const filteredCourses = courses.filter(c =>
-    !debSearch || c.name.toLowerCase().includes(debSearch.toLowerCase())
+    Number(c.questionCount) > 0 &&
+    (!debSearch || c.name.toLowerCase().includes(debSearch.toLowerCase()))
   );
 
   return (
@@ -119,7 +120,7 @@ export default function Browse() {
 
         <div className="mb-10">
           <h1 className="text-3xl sm:text-4xl font-bold text-[#0f2240] dark:text-white mb-2">
-            استعرض التحليلات
+            استكشف التحليلات
           </h1>
           <p className="text-slate-500 dark:text-slate-400">
             اختر كليتك وقسمك لاستعراض تحليلات المقررات
@@ -240,9 +241,9 @@ export default function Browse() {
                   <BookOpen className="h-10 w-10 text-slate-300 dark:text-[#1a3a6a]" />
                 </div>
                 <p className="font-semibold text-slate-600 dark:text-slate-300 mb-2">
-                  {courses.length === 0
-                    ? "لا توجد مقررات مُدخلة حالياً في هذا القسم. كن أول من يساهم! 🎯"
-                    : "لا توجد مقررات تطابق بحثك"}
+                  {filteredCourses.length === 0 && debSearch
+                    ? "لا توجد مقررات تطابق بحثك"
+                    : "لا توجد مقررات بأسئلة معتمدة في هذا القسم بعد. كن أول من يساهم! 🎯"}
                 </p>
                 <Link
                   href="/submit"

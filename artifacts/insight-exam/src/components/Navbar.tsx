@@ -31,7 +31,7 @@ export default function Navbar() {
               className="flex items-center gap-1.5 bg-gradient-to-r from-[#2d6cc0] to-[#4a9eed] text-white px-5 py-2 rounded-full text-sm font-semibold hover:shadow-lg hover:shadow-[#2d6cc0]/25 hover:-translate-y-0.5 transition-all duration-200"
             >
               <BarChart2 className="h-3.5 w-3.5" />
-              استعرض التحليلات
+              استكشف التحليلات
             </Link>
             <button
               onClick={toggle}
@@ -74,7 +74,7 @@ export default function Navbar() {
               className="flex items-center gap-2 bg-gradient-to-r from-[#2d6cc0] to-[#4a9eed] text-white px-5 py-2.5 rounded-full text-sm font-semibold justify-center"
             >
               <BarChart2 className="h-4 w-4" />
-              استعرض التحليلات
+              استكشف التحليلات
             </Link>
           </div>
         )}

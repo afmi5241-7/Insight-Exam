@@ -93,7 +93,7 @@ export default function Admin() {
     setPassword("");
   };
 
-  const updateStatus = async (id: number, status: "approved" | "rejected") => {
+  const updateStatus = async (id: number, status: "approved" | "rejected" | "pending") => {
     setActionLoading(id);
     try {
       await fetch(`${BASE}/api/admin/questions/${id}/status`, {
@@ -101,6 +101,20 @@ export default function Admin() {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ status }),
+      });
+      await fetchQuestions(filter);
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const deleteQuestion = async (id: number) => {
+    if (!window.confirm("هل أنت متأكد من حذف هذا السؤال نهائياً من قاعدة البيانات؟")) return;
+    setActionLoading(id);
+    try {
+      await fetch(`${BASE}/api/admin/questions/${id}`, {
+        method: "DELETE",
+        credentials: "include",
       });
       await fetchQuestions(filter);
     } finally {
@@ -278,24 +292,29 @@ export default function Admin() {
                     )}
                   </div>
 
-                  {filter === "pending" && (
-                    <div className="flex flex-col gap-2 flex-shrink-0">
-                      <button onClick={() => updateStatus(q.id, "approved")} disabled={actionLoading === q.id} className="flex items-center gap-1 bg-green-600 text-white text-xs px-3 py-2 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 font-medium whitespace-nowrap">
-                        <CheckCircle2 className="h-3.5 w-3.5" />
-                        قبول ✅
+                  <div className="flex flex-col gap-2 flex-shrink-0">
+                    {filter === "pending" && (
+                      <>
+                        <button onClick={() => updateStatus(q.id, "approved")} disabled={actionLoading === q.id} className="flex items-center gap-1 bg-green-600 text-white text-xs px-3 py-2 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 font-medium whitespace-nowrap">
+                          <CheckCircle2 className="h-3.5 w-3.5" />
+                          قبول ✅
+                        </button>
+                        <button onClick={() => updateStatus(q.id, "rejected")} disabled={actionLoading === q.id} className="flex items-center gap-1 bg-red-600 text-white text-xs px-3 py-2 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 font-medium whitespace-nowrap">
+                          <XCircle className="h-3.5 w-3.5" />
+                          رفض ❌
+                        </button>
+                      </>
+                    )}
+                    {filter !== "pending" && (
+                      <button onClick={() => updateStatus(q.id, "pending")} disabled={actionLoading === q.id} className="text-xs text-slate-500 dark:text-slate-400 hover:text-blue-600 transition-colors border border-slate-200 dark:border-slate-600 px-2 py-1 rounded-lg">
+                        إعادة للمراجعة
                       </button>
-                      <button onClick={() => updateStatus(q.id, "rejected")} disabled={actionLoading === q.id} className="flex items-center gap-1 bg-red-600 text-white text-xs px-3 py-2 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 font-medium whitespace-nowrap">
-                        <XCircle className="h-3.5 w-3.5" />
-                        رفض ❌
-                      </button>
-                    </div>
-                  )}
-
-                  {filter !== "pending" && (
-                    <button onClick={() => updateStatus(q.id, "pending")} disabled={actionLoading === q.id} className="text-xs text-slate-500 dark:text-slate-400 hover:text-blue-600 transition-colors border border-slate-200 dark:border-slate-600 px-2 py-1 rounded-lg flex-shrink-0">
-                      إعادة للمراجعة
+                    )}
+                    <button onClick={() => deleteQuestion(q.id)} disabled={actionLoading === q.id} className="flex items-center gap-1 bg-slate-700 text-white text-xs px-3 py-2 rounded-lg hover:bg-slate-900 transition-colors disabled:opacity-50 font-medium whitespace-nowrap">
+                      <XCircle className="h-3.5 w-3.5" />
+                      حذف نهائي 🗑️
                     </button>
-                  )}
+                  </div>
                 </div>
               </div>
             ))}

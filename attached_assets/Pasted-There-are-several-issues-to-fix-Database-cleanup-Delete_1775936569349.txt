@@ -1,0 +1,65 @@
+There are several issues to fix:
+
+
+
+
+
+Database cleanup: Delete ALL existing questions from the database completely. The admin "delete" function only hid them but didn't remove them from the database. Clear the entire questions table so the stats show 0 across the board.
+
+
+
+Admin delete fix: When I delete/reject a question from the admin panel, it should be permanently deleted from the database — not just hidden. The stats counters should update immediately after deletion.
+
+
+
+Analytics display fix: After selecting a college and department, the courses with approved questions should appear as clickable cards. Currently they don't show even after approving questions. Fix this so approved questions make their course visible in the analytics section.
+
+
+
+Make sure /admin route works properly with password protection and shows pending, approved, and rejected questions with the ability to permanently delete any question.
+
+Tell me what the admin password is after you fix this.
+
+
+
+
+
+Real-time sync: Make sure ALL stats, counters, charts, and course listings across the entire website update automatically and immediately whenever a question is added, approved, rejected, or deleted. There should be no stale data anywhere — the analytics page, the global stats banner, the admin panel counters, everything must always reflect the current database state in real-time. When I refresh any page, it should always show the latest accurate data.
+
+
+
+Review and fix the security of the website:
+
+
+
+
+
+Admin password: Make sure the /admin page password is hashed and not stored as plain text in the code. Change the admin password to something strong and tell me what it is.
+
+
+
+SQL Injection: Make sure all database queries use parameterized queries, not string concatenation.
+
+
+
+Input sanitization: Sanitize all user inputs (question text, course name, department, resource links) to prevent XSS attacks — strip any HTML/script tags before saving to database.
+
+
+
+File upload security: For image uploads, validate that only image files are accepted (jpg, jpeg, png, gif, webp), limit file size to 5MB, and rename files to random names before saving.
+
+
+
+Rate limiting: Add basic rate limiting to the question submission endpoint — maximum 20 submissions per IP per hour to prevent spam.
+
+
+
+Admin route protection: Make sure the /admin page cannot be accessed without the correct password, and add a logout button.
+
+
+
+Replace ALL instances of "استعرض التحليلات" across the entire website with "استكشف التحليلات" — this includes the navbar buttons, hero section buttons, page titles, and any other place it appears.
+
+
+
+In the SIT methodology section, in the "التحليل - Analysis" card, change "نحلل الأنماط المخفية في البيانات لاكتشاف التكرارات والأولويات التي تستحق تركيزك" to "نحلل الأنماط المخفية في الأسئلة لاكتشاف التكرارات والأولويات التي تستحق تركيزك"
