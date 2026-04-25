@@ -77,8 +77,15 @@ export default function Browse() {
 
   useEffect(() => {
     fetch(`${BASE}/api/faculties`, { credentials: "include" })
-      .then(r => r.json()).then(data => setFaculties(Array.isArray(data) ? data : [])).catch(() => setFaculties([])).finally(() => setLoadingFaculties(false));
+      .then(r => (r.ok ? r.json() : []))
+      .then(data => setFaculties(Array.isArray(data) ? data : []))
+      .catch(() => setFaculties([]))
+      .finally(() => setLoadingFaculties(false));
   }, []);
+
+  const facultyOptions = Array.from(
+    new Set([...Object.keys(COLLEGE_DEPARTMENTS), ...faculties])
+  );
 
   useEffect(() => {
     setDepartment("");
@@ -176,7 +183,7 @@ export default function Browse() {
                 disabled={loadingFaculties}
               >
                 <option value="">اختر الكلية...</option>
-                {faculties.map(f => <option key={f} value={f}>{f}</option>)}
+                {facultyOptions.map(f => <option key={f} value={f}>{f}</option>)}
               </select>
               <ChevronDown className="absolute top-1/2 -translate-y-1/2 left-3.5 h-4 w-4 text-slate-400 pointer-events-none" />
             </div>
