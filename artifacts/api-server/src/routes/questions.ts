@@ -4,22 +4,6 @@ import { eq, and } from "drizzle-orm";
 
 const router: IRouter = Router();
 
-// ─── Rate Limiting ────────────────────────────────────────────────────────────
-// Max 20 submissions per IP per hour (rolling window)
-const rateMap = new Map<string, number[]>();
-const RATE_LIMIT = 20;
-const RATE_WINDOW_MS = 60 * 60 * 1000;
-
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now();
-  const cutoff = now - RATE_WINDOW_MS;
-  const timestamps = (rateMap.get(ip) ?? []).filter(t => t > cutoff);
-  if (timestamps.length >= RATE_LIMIT) return false;
-  timestamps.push(now);
-  rateMap.set(ip, timestamps);
-  return true;
-}
-
 // ─── Input Sanitisation ───────────────────────────────────────────────────────
 // Strips all HTML/script tags from a string to prevent XSS
 function sanitize(value: unknown): string {
@@ -71,13 +55,6 @@ function validateImageUrl(imageUrl: string): { ok: boolean; error?: string } {
 
 // ─── Submit Question ──────────────────────────────────────────────────────────
 router.post("/questions/submit", async (req, res): Promise<void> => {
-  // Rate limiting
-  const ip = (req.headers["x-forwarded-for"] as string ?? req.socket.remoteAddress ?? "unknown").split(",")[0].trim();
-  if (!checkRateLimit(ip)) {
-    res.status(429).json({ error: "لقد تجاوزت الحد المسموح به (20 سؤال/ساعة). يرجى المحاولة لاحقاً." });
-    return;
-  }
-
   const raw = req.body ?? {};
 
   // Sanitize all text inputs
