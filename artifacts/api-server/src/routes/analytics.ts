@@ -65,7 +65,8 @@ router.get("/courses/:id/analytics", async (req, res): Promise<void> => {
       finalsChapterFrequency: [], midtermsChapterFrequency: [],
       chapterFrequency: [], typeDistribution: [],
       difficultyDistribution: [], yearlyFrequency: [],
-      chaptersOverview: [], sourceLinks: [],
+      chaptersOverview: [], chapterDifficultyBreakdown: [],
+      sourceLinks: [],
       recommendations: ["لم تتم الموافقة على أي أسئلة بعد. تحقق مرة أخرى لاحقاً!"],
     });
     return;
@@ -131,13 +132,18 @@ router.get("/courses/:id/analytics", async (req, res): Promise<void> => {
   const dominantDifficulty = difficultyDistribution[0]?.label ?? "";
   const mostRepeatedChapter = chapterFrequency[0]?.chapter ?? "";
 
-  // Chapter overview for accordion
+  // Chapter overview + per-chapter difficulty breakdown
+  const chapterDifficultyBreakdown: { chapter: string; easy: number; medium: number; hard: number; total: number }[] = [];
   const chaptersOverview = Array.from(chapterMap.entries())
     .sort((a, b) => b[1] - a[1])
     .map(([chapter, cnt]) => {
       const chapterQs = questions.filter(q => q.chapter === chapter);
       const chDiff = new Map<string, number>();
       for (const q of chapterQs) chDiff.set(q.difficulty, (chDiff.get(q.difficulty) ?? 0) + 1);
+      const easy = (chDiff.get("سهل") ?? 0) + (chDiff.get("easy") ?? 0);
+      const medium = (chDiff.get("متوسط") ?? 0) + (chDiff.get("medium") ?? 0);
+      const hard = (chDiff.get("صعب") ?? 0) + (chDiff.get("hard") ?? 0);
+      chapterDifficultyBreakdown.push({ chapter, easy, medium, hard, total: chapterQs.length });
       const diffEntries = Array.from(chDiff.entries()).sort((a, b) => b[1] - a[1]);
       const dominantDiff = diffLabel[diffEntries[0]?.[0] ?? ""] ?? "";
       const dominantDiffPct = Math.round(((diffEntries[0]?.[1] ?? 0) / chapterQs.length) * 100);
@@ -167,7 +173,8 @@ router.get("/courses/:id/analytics", async (req, res): Promise<void> => {
     mostRepeatedChapter, mostCommonType, dominantDifficulty,
     finalsChapterFrequency, midtermsChapterFrequency,
     chapterFrequency, typeDistribution, difficultyDistribution,
-    yearlyFrequency, chaptersOverview, sourceLinks, recommendations,
+    yearlyFrequency, chaptersOverview, chapterDifficultyBreakdown,
+    sourceLinks, recommendations,
   });
 });
 

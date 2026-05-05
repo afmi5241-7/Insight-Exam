@@ -2,7 +2,7 @@ import { Link, useParams } from "wouter";
 import { useEffect, useState } from "react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell,
+  PieChart, Pie, Cell, Legend, LabelList,
 } from "recharts";
 import {
   BookOpen, Target, HelpCircle, TrendingUp, PlusCircle, ChevronRight,
@@ -20,7 +20,26 @@ const diffColors: Record<string, string> = {
   "صعب": "#EF4444", "hard": "#EF4444",
 };
 
-const CHART_COLORS = ["#2d6cc0", "#4a9eed", "#7ec8f0", "#1a4b8c", "#22C55E", "#F59E0B", "#EF4444"];
+const CHART_COLORS = ["#1a4b8c", "#2d6cc0", "#4a9eed", "#7ec8f0", "#22C55E", "#F59E0B", "#EF4444", "#a855f7", "#ec4899"];
+
+// Distinct blue shade per bar — interpolated from dark to light blue.
+function blueShade(index: number, total: number): string {
+  if (total <= 1) return "#1d4ed8";
+  const t = index / (total - 1);
+  const r = Math.round(29 + (126 - 29) * t);
+  const g = Math.round(78 + (200 - 78) * t);
+  const b = Math.round(216 + (240 - 216) * t);
+  return `rgb(${r}, ${g}, ${b})`;
+}
+
+function buildSubmitHref(course: { faculty: string; department: string; name: string }) {
+  const qs = new URLSearchParams({
+    faculty: course.faculty,
+    department: course.department,
+    courseName: course.name,
+  }).toString();
+  return `/submit?${qs}`;
+}
 
 interface ChapterOverview {
   chapter: string;
@@ -43,6 +62,7 @@ interface Analytics {
   difficultyDistribution: { difficulty: string; label: string; count: number; percentage: number }[];
   yearlyFrequency: { period: string; count: number }[];
   chaptersOverview: ChapterOverview[];
+  chapterDifficultyBreakdown: { chapter: string; easy: number; medium: number; hard: number; total: number }[];
   sourceLinks: { link: string; chapter: string; topic?: string }[];
   recommendations: string[];
 }
@@ -157,8 +177,21 @@ export default function Analytics() {
   const {
     course, totalQuestions, chaptersCovered, mostCommonType, dominantDifficulty,
     finalsChapterFrequency, midtermsChapterFrequency, typeDistribution,
-    difficultyDistribution, chaptersOverview, sourceLinks, recommendations,
+    difficultyDistribution, chaptersOverview, chapterDifficultyBreakdown,
+    sourceLinks, recommendations,
   } = data;
+
+  const submitHref = buildSubmitHref(course);
+
+  const finalsData = finalsChapterFrequency.map(c => ({ ...c, labelText: `${c.count} (${c.percentage}%)` }));
+  const midtermsData = midtermsChapterFrequency.map(c => ({ ...c, labelText: `${c.count} (${c.percentage}%)` }));
+  const difficultyData = difficultyDistribution.map(d => ({ ...d, name: d.label, labelText: `${d.count} (${d.percentage}%)` }));
+  const breakdownData = (chapterDifficultyBreakdown ?? []).map(c => ({
+    ...c,
+    easyPct: c.total ? Math.round((c.easy / c.total) * 100) : 0,
+    mediumPct: c.total ? Math.round((c.medium / c.total) * 100) : 0,
+    hardPct: c.total ? Math.round((c.hard / c.total) * 100) : 0,
+  }));
 
   const sourcesByChapter = sourceLinks.reduce<Record<string, { link: string; topic?: string }[]>>((acc, src) => {
     if (!acc[src.chapter]) acc[src.chapter] = [];
@@ -185,7 +218,7 @@ export default function Analytics() {
             <p className="text-slate-500 dark:text-slate-400 text-sm mt-1.5">{course.faculty} · {course.department}</p>
           </div>
           <Link
-            href="/submit"
+            href={submitHref}
             className="flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-green-500 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:shadow-lg hover:shadow-green-500/25 hover:-translate-y-0.5 transition-all duration-200 w-fit"
           >
             <PlusCircle className="h-4 w-4" />
@@ -194,7 +227,7 @@ export default function Analytics() {
         </div>
 
         {totalQuestions === 0 ? (
-          <EmptyState courseId={courseId} />
+          <EmptyState submitHref={submitHref} />
         ) : (
           <>
             {/* Stage Stepper */}
@@ -211,64 +244,88 @@ export default function Analytics() {
             {/* ── Stage 1: التشخيص ── */}
             {stage === 1 && (
               <div className="space-y-6 animate-in fade-in duration-300">
-                {finalsChapterFrequency.length > 0 && (
+                {finalsData.length > 0 && (
                   <ChartCard title="تكرار الفصول في اختبارات الفاينل 📋">
-                    <ResponsiveContainer width="100%" height={Math.max(220, finalsChapterFrequency.length * 42)}>
-                      <BarChart data={finalsChapterFrequency} layout="vertical" margin={{ right: 50, left: 8 }}>
+                    <ResponsiveContainer width="100%" height={Math.max(260, finalsData.length * 56)}>
+                      <BarChart data={finalsData} layout="vertical" margin={{ top: 8, right: 90, left: 8, bottom: 8 }} barCategoryGap="28%">
                         <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke={gridStroke} />
-                        <XAxis type="number" tick={{ fontSize: 11, fill: tickColor }} />
-                        <YAxis dataKey="chapter" type="category" width={110} tick={{ fontSize: 10, fill: tickColor }} tickFormatter={(v: string) => v.length > 16 ? v.slice(0, 16) + "…" : v} />
-                        <Tooltip content={<CustomTooltip dark={dark} />} />
-                        <Bar dataKey="count" name="عدد الأسئلة" radius={[0, 6, 6, 0]}
-                          label={{ position: "right", fontSize: 10, fill: tickColor, formatter: (_: any, entry: any) => `${entry?.payload?.percentage ?? ""}%` }}
-                        >
-                          {finalsChapterFrequency.map((_, i) => {
-                            const maxCount = finalsChapterFrequency[0]?.count || 1;
-                            const intensity = 0.45 + 0.55 * (finalsChapterFrequency[i]?.count / maxCount);
-                            return <Cell key={i} fill={`rgba(26, 75, 140, ${intensity})`} />;
-                          })}
+                        <XAxis type="number" allowDecimals={false} tick={{ fontSize: 12, fill: tickColor }} />
+                        <YAxis dataKey="chapter" type="category" width={170} tick={{ fontSize: 12, fill: tickColor }} interval={0} />
+                        <Tooltip content={<CustomTooltip dark={dark} />} cursor={{ fill: dark ? "rgba(74,158,237,0.08)" : "rgba(45,108,192,0.06)" }} />
+                        <Bar dataKey="count" name="عدد الأسئلة" radius={[0, 8, 8, 0]}>
+                          {finalsData.map((_, i) => (
+                            <Cell key={i} fill={blueShade(i, finalsData.length)} />
+                          ))}
+                          <LabelList dataKey="labelText" position="right" style={{ fontSize: 12, fontWeight: 600 }} fill={tickColor} />
                         </Bar>
                       </BarChart>
                     </ResponsiveContainer>
                   </ChartCard>
                 )}
 
-                {midtermsChapterFrequency.length > 0 && (
+                {midtermsData.length > 0 && (
                   <ChartCard title="تكرار الفصول في اختبارات الميد 📝">
-                    <ResponsiveContainer width="100%" height={Math.max(220, midtermsChapterFrequency.length * 42)}>
-                      <BarChart data={midtermsChapterFrequency} layout="vertical" margin={{ right: 50, left: 8 }}>
+                    <ResponsiveContainer width="100%" height={Math.max(260, midtermsData.length * 56)}>
+                      <BarChart data={midtermsData} layout="vertical" margin={{ top: 8, right: 90, left: 8, bottom: 8 }} barCategoryGap="28%">
                         <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke={gridStroke} />
-                        <XAxis type="number" tick={{ fontSize: 11, fill: tickColor }} />
-                        <YAxis dataKey="chapter" type="category" width={110} tick={{ fontSize: 10, fill: tickColor }} tickFormatter={(v: string) => v.length > 16 ? v.slice(0, 16) + "…" : v} />
-                        <Tooltip content={<CustomTooltip dark={dark} />} />
-                        <Bar dataKey="count" name="عدد الأسئلة" radius={[0, 6, 6, 0]}
-                          label={{ position: "right", fontSize: 10, fill: tickColor, formatter: (_: any, entry: any) => `${entry?.payload?.percentage ?? ""}%` }}
-                        >
-                          {midtermsChapterFrequency.map((_, i) => {
-                            const maxCount = midtermsChapterFrequency[0]?.count || 1;
-                            const intensity = 0.45 + 0.55 * (midtermsChapterFrequency[i]?.count / maxCount);
-                            return <Cell key={i} fill={`rgba(74, 158, 237, ${intensity})`} />;
-                          })}
+                        <XAxis type="number" allowDecimals={false} tick={{ fontSize: 12, fill: tickColor }} />
+                        <YAxis dataKey="chapter" type="category" width={170} tick={{ fontSize: 12, fill: tickColor }} interval={0} />
+                        <Tooltip content={<CustomTooltip dark={dark} />} cursor={{ fill: dark ? "rgba(74,158,237,0.08)" : "rgba(45,108,192,0.06)" }} />
+                        <Bar dataKey="count" name="عدد الأسئلة" radius={[0, 8, 8, 0]}>
+                          {midtermsData.map((_, i) => (
+                            <Cell key={i} fill={blueShade(i, midtermsData.length)} />
+                          ))}
+                          <LabelList dataKey="labelText" position="right" style={{ fontSize: 12, fontWeight: 600 }} fill={tickColor} />
                         </Bar>
                       </BarChart>
                     </ResponsiveContainer>
                   </ChartCard>
                 )}
 
-                {difficultyDistribution.length > 0 && (
+                {difficultyData.length > 0 && (
                   <ChartCard title="توزيع مستوى الصعوبة">
-                    <ResponsiveContainer width="100%" height={220}>
-                      <BarChart data={difficultyDistribution.map(d => ({ ...d, name: d.label }))} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
+                    <ResponsiveContainer width="100%" height={260}>
+                      <BarChart data={difficultyData} margin={{ top: 28, right: 20, bottom: 8, left: 0 }} barCategoryGap="32%">
                         <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
-                        <XAxis dataKey="name" tick={{ fontSize: 12, fill: tickColor }} />
-                        <YAxis tick={{ fontSize: 11, fill: tickColor }} />
-                        <Tooltip content={<CustomTooltip dark={dark} />} />
-                        <Bar dataKey="count" name="عدد الأسئلة" radius={[6, 6, 0, 0]}
-                          label={{ position: "top", fontSize: 11, fill: tickColor, formatter: (_: any, entry: any) => `${entry?.payload?.percentage ?? ""}%` }}
-                        >
-                          {difficultyDistribution.map((d, i) => (
+                        <XAxis dataKey="name" tick={{ fontSize: 13, fontWeight: 600, fill: tickColor }} />
+                        <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: tickColor }} />
+                        <Tooltip content={<CustomTooltip dark={dark} />} cursor={{ fill: dark ? "rgba(74,158,237,0.08)" : "rgba(45,108,192,0.06)" }} />
+                        <Legend wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
+                        <Bar dataKey="count" name="عدد الأسئلة" radius={[8, 8, 0, 0]}>
+                          {difficultyData.map((d, i) => (
                             <Cell key={i} fill={diffColors[d.difficulty] ?? "#2d6cc0"} />
                           ))}
+                          <LabelList dataKey="labelText" position="top" style={{ fontSize: 12, fontWeight: 600 }} fill={tickColor} />
+                        </Bar>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </ChartCard>
+                )}
+
+                {breakdownData.length > 0 && (
+                  <ChartCard title="مستوى صعوبة الأسئلة في كل فصل">
+                    <ResponsiveContainer width="100%" height={Math.max(280, breakdownData.length * 56)}>
+                      <BarChart data={breakdownData} layout="vertical" margin={{ top: 8, right: 30, left: 8, bottom: 8 }} barCategoryGap="28%">
+                        <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke={gridStroke} />
+                        <XAxis type="number" allowDecimals={false} tick={{ fontSize: 12, fill: tickColor }} />
+                        <YAxis dataKey="chapter" type="category" width={170} tick={{ fontSize: 12, fill: tickColor }} interval={0} />
+                        <Tooltip
+                          contentStyle={{ borderRadius: 12, border: dark ? "1px solid rgba(26,58,106,0.6)" : "1px solid #f0f6ff", background: dark ? "#0f2240" : "#fff", color: dark ? "#e2e8f0" : "#1e293b" }}
+                          formatter={(v: any, name: any, props: any) => {
+                            const total = props?.payload?.total ?? 0;
+                            const pct = total ? Math.round((v / total) * 100) : 0;
+                            return [`${v} (${pct}%)`, name];
+                          }}
+                        />
+                        <Legend wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
+                        <Bar dataKey="easy" name="سهل" stackId="diff" fill={diffColors["سهل"]} radius={[0, 0, 0, 0]}>
+                          <LabelList dataKey="easy" position="center" style={{ fontSize: 11, fontWeight: 700, fill: "#fff" }} formatter={(v: any) => (v && v > 0 ? v : "")} />
+                        </Bar>
+                        <Bar dataKey="medium" name="متوسط" stackId="diff" fill={diffColors["متوسط"]} radius={[0, 0, 0, 0]}>
+                          <LabelList dataKey="medium" position="center" style={{ fontSize: 11, fontWeight: 700, fill: "#fff" }} formatter={(v: any) => (v && v > 0 ? v : "")} />
+                        </Bar>
+                        <Bar dataKey="hard" name="صعب" stackId="diff" fill={diffColors["صعب"]} radius={[0, 8, 8, 0]}>
+                          <LabelList dataKey="hard" position="center" style={{ fontSize: 11, fontWeight: 700, fill: "#fff" }} formatter={(v: any) => (v && v > 0 ? v : "")} />
                         </Bar>
                       </BarChart>
                     </ResponsiveContainer>
@@ -313,20 +370,25 @@ export default function Analytics() {
               <div className="space-y-6 animate-in fade-in duration-300">
                 {typeDistribution.length > 0 && (
                   <ChartCard title="توزيع أنواع الأسئلة">
-                    <ResponsiveContainer width="100%" height={260}>
-                      <PieChart>
+                    <ResponsiveContainer width="100%" height={360}>
+                      <PieChart margin={{ top: 10, right: 60, bottom: 10, left: 60 }}>
                         <Pie
                           data={typeDistribution.map(t => ({ ...t, name: t.label }))}
                           dataKey="count" nameKey="name"
-                          cx="50%" cy="50%" outerRadius={90}
+                          cx="50%" cy="50%" outerRadius={100}
                           label={({ name, value, payload }: any) => `${name}: ${value} (${payload?.percentage ?? 0}%)`}
-                          labelLine={false}
+                          labelLine={true}
+                          minAngle={4}
                         >
                           {typeDistribution.map((_, i) => (
                             <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
                           ))}
                         </Pie>
-                        <Tooltip formatter={(v: any, n: any, props: any) => [`${v} (${props.payload?.percentage ?? 0}%)`, n]} />
+                        <Tooltip
+                          contentStyle={{ borderRadius: 12, border: dark ? "1px solid rgba(26,58,106,0.6)" : "1px solid #f0f6ff", background: dark ? "#0f2240" : "#fff", color: dark ? "#e2e8f0" : "#1e293b" }}
+                          formatter={(v: any, n: any, props: any) => [`${v} (${props.payload?.percentage ?? 0}%)`, n]}
+                        />
+                        <Legend verticalAlign="bottom" wrapperStyle={{ fontSize: 12, paddingTop: 12 }} />
                       </PieChart>
                     </ResponsiveContainer>
                   </ChartCard>
@@ -396,7 +458,7 @@ export default function Analytics() {
                     <div className="w-20 h-20 bg-[#f0f6ff] dark:bg-[#0a1628] rounded-full flex items-center justify-center mx-auto mb-5 text-4xl">📚</div>
                     <h3 className="font-bold text-[#0f2240] dark:text-slate-300 mb-2 text-lg">لا توجد مصادر حتى الآن</h3>
                     <p className="text-slate-400 dark:text-slate-500 text-sm mb-6 leading-relaxed">ساهم بإضافة روابط شرح مفيدة عند إدخال أسئلة جديدة</p>
-                    <Link href="/submit" className="inline-flex items-center gap-2 bg-gradient-to-r from-[#2d6cc0] to-[#4a9eed] text-white px-6 py-2.5 rounded-full font-semibold text-sm hover:shadow-lg transition-all">
+                    <Link href={submitHref} className="inline-flex items-center gap-2 bg-gradient-to-r from-[#2d6cc0] to-[#4a9eed] text-white px-6 py-2.5 rounded-full font-semibold text-sm hover:shadow-lg transition-all">
                       <PlusCircle className="h-4 w-4" />أضف سؤالاً مع رابط
                     </Link>
                   </div>
@@ -513,7 +575,7 @@ function ChartCard({ title, children, className = "" }: { title: string; childre
   );
 }
 
-function EmptyState({ courseId }: { courseId: number }) {
+function EmptyState({ submitHref }: { submitHref: string }) {
   return (
     <div className="bg-white dark:bg-[#0f2240] rounded-2xl border-2 border-dashed border-slate-200 dark:border-[#1a3a6a]/40 p-20 text-center">
       <div className="w-24 h-24 bg-[#f0f6ff] dark:bg-[#0a1628] rounded-full flex items-center justify-center mx-auto mb-6">
@@ -521,7 +583,7 @@ function EmptyState({ courseId }: { courseId: number }) {
       </div>
       <h3 className="font-bold text-[#0f2240] dark:text-slate-300 mb-3 text-xl">لا توجد بيانات للتحليل بعد</h3>
       <p className="text-slate-400 dark:text-slate-500 text-sm mb-8 leading-relaxed">الأسئلة المرفوعة قيد المراجعة — أو كن أول من يضيف أسئلة لهذا المقرر!</p>
-      <Link href="/submit" className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-green-500 text-white px-7 py-3 rounded-full font-semibold hover:shadow-lg hover:shadow-green-500/25 hover:-translate-y-0.5 transition-all duration-200">
+      <Link href={submitHref} className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-green-500 text-white px-7 py-3 rounded-full font-semibold hover:shadow-lg hover:shadow-green-500/25 hover:-translate-y-0.5 transition-all duration-200">
         <PlusCircle className="h-4 w-4" />أضف أسئلة الآن
       </Link>
     </div>

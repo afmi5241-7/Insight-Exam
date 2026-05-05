@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Link } from "wouter";
+import { Link, useSearch } from "wouter";
 import { CheckCircle2, Upload, X, ArrowRight, ArrowLeft, Lightbulb, ChevronDown } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -88,12 +88,23 @@ function ProgressBar({ step }: { step: 1 | 2 }) {
 }
 
 export default function SubmitQuestion() {
-  const [step, setStep] = useState<1 | 2>(1);
+  const search = useSearch();
+  const initialParams = new URLSearchParams(search);
+  const initFaculty = initialParams.get("faculty") ?? "";
+  const initDepartment = initialParams.get("department") ?? "";
+  const initCourseName = initialParams.get("courseName") ?? "";
+  const hasPrefilled = Boolean(initFaculty && initDepartment && initCourseName);
+
+  const [step, setStep] = useState<1 | 2>(hasPrefilled ? 2 : 1);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  const [step1, setStep1] = useState<Step1>({ faculty: "", department: "", courseName: "" });
+  const [step1, setStep1] = useState<Step1>({
+    faculty: initFaculty,
+    department: initDepartment,
+    courseName: initCourseName,
+  });
   const [step2, setStep2] = useState<Step2>({
     text: "", imageUrl: "", chapter: "", topic: "",
     questionType: "", difficulty: "", year: "", examType: "", sourceLink: "",

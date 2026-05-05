@@ -2,10 +2,10 @@ import { Link, useParams } from "wouter";
 import { useEffect, useState } from "react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell,
+  PieChart, Pie, Cell, Legend, LabelList,
 } from "recharts";
 import {
-  ChevronRight, PlusCircle, Star, Repeat2, BookOpen, ExternalLink,
+  ChevronRight, PlusCircle, Star, Repeat2, BookOpen,
   AlertCircle, Lightbulb,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -41,6 +41,15 @@ interface ChapterData {
   repeatCount: number;
   questions: Question[];
   sourceLinks: { link: string; topic?: string }[];
+}
+
+function buildSubmitHref(course: { faculty: string; department: string; name: string }) {
+  const qs = new URLSearchParams({
+    faculty: course.faculty,
+    department: course.department,
+    courseName: course.name,
+  }).toString();
+  return `/submit?${qs}`;
 }
 
 function CustomTooltip({ active, payload, label, dark }: any) {
@@ -132,13 +141,17 @@ export default function ChapterAnalytics() {
     );
   }
 
-  const { course, totalQuestions, difficultyDistribution, frequencyByPeriod, modelQuestion, modelQuestionType, repeatCount, questions, sourceLinks } = data;
+  const { course, totalQuestions, difficultyDistribution, frequencyByPeriod, modelQuestion, modelQuestionType, repeatCount, sourceLinks } = data;
 
   const donutData = difficultyDistribution.map(d => ({
     name: d.label,
     value: d.count,
+    percentage: d.percentage,
     color: (dark ? DIFF_DARK_COLORS : DIFF_COLORS)[d.difficulty] ?? "#94a3b8",
   }));
+
+  const yearlyBlues = ["#1e3a8a", "#1d4ed8", "#2563eb", "#3b82f6", "#60a5fa", "#7ec8f0"];
+  const submitHref = buildSubmitHref(course);
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f0f6ff] dark:bg-[#0a1628] transition-colors duration-300">
@@ -164,7 +177,7 @@ export default function ChapterAnalytics() {
             <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">{totalQuestions} سؤال محلَّل</p>
           </div>
           <Link
-            href="/submit"
+            href={submitHref}
             className="flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-green-500 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:shadow-lg hover:shadow-green-500/25 hover:-translate-y-0.5 transition-all duration-200 w-fit"
           >
             <PlusCircle className="h-4 w-4" />
@@ -176,7 +189,7 @@ export default function ChapterAnalytics() {
           <div className="bg-white dark:bg-[#0f2240] rounded-2xl border-2 border-dashed border-slate-200 dark:border-[#1a3a6a]/40 p-16 text-center">
             <AlertCircle className="h-12 w-12 text-slate-300 dark:text-[#1a3a6a] mx-auto mb-4" />
             <p className="font-bold text-slate-600 dark:text-slate-300 mb-2">لا توجد أسئلة محلَّلة لهذا الفصل بعد</p>
-            <Link href="/submit" className="inline-flex items-center gap-2 mt-4 bg-gradient-to-r from-emerald-500 to-green-500 text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:shadow-lg transition-all">
+            <Link href={submitHref} className="inline-flex items-center gap-2 mt-4 bg-gradient-to-r from-emerald-500 to-green-500 text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:shadow-lg transition-all">
               <PlusCircle className="h-4 w-4" />أضف أسئلة الآن
             </Link>
           </div>
@@ -187,46 +200,44 @@ export default function ChapterAnalytics() {
               {/* Donut */}
               <div className="bg-white dark:bg-[#0f2240] rounded-2xl border border-slate-100 dark:border-[#1a3a6a]/40 shadow-sm p-6">
                 <h3 className="font-bold text-[#0f2240] dark:text-white mb-5 text-sm">مستوى صعوبة الأسئلة في هذا الفصل</h3>
-                <ResponsiveContainer width="100%" height={220}>
-                  <PieChart>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart margin={{ top: 10, right: 30, bottom: 10, left: 30 }}>
                     <Pie
                       data={donutData}
                       dataKey="value" nameKey="name"
                       cx="50%" cy="50%"
-                      innerRadius={55} outerRadius={85}
+                      innerRadius={55} outerRadius={90}
                       paddingAngle={3}
-                      label={({ name, percent }) => `${name} ${Math.round((percent ?? 0) * 100)}%`}
-                      labelLine={false}
+                      label={({ name, value, payload }: any) => `${name}: ${value} (${payload?.percentage ?? 0}%)`}
+                      labelLine={true}
+                      minAngle={4}
                     >
                       {donutData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
                     </Pie>
-                    <Tooltip formatter={(v: any, n: any) => [v, n]} />
+                    <Tooltip
+                      contentStyle={{ borderRadius: 12, border: dark ? "1px solid rgba(26,58,106,0.6)" : "1px solid #f0f6ff", background: dark ? "#0f2240" : "#fff", color: dark ? "#e2e8f0" : "#1e293b" }}
+                      formatter={(v: any, n: any, props: any) => [`${v} (${props.payload?.percentage ?? 0}%)`, n]}
+                    />
+                    <Legend verticalAlign="bottom" wrapperStyle={{ fontSize: 12, paddingTop: 10 }} />
                   </PieChart>
                 </ResponsiveContainer>
-                <div className="flex justify-center gap-4 mt-2">
-                  {donutData.map(d => (
-                    <div key={d.name} className="flex items-center gap-1.5">
-                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: d.color }} />
-                      <span className="text-xs text-slate-500 dark:text-slate-400">{d.name}</span>
-                    </div>
-                  ))}
-                </div>
               </div>
 
               {/* Frequency Bar */}
               <div className="bg-white dark:bg-[#0f2240] rounded-2xl border border-slate-100 dark:border-[#1a3a6a]/40 shadow-sm p-6">
                 <h3 className="font-bold text-[#0f2240] dark:text-white mb-5 text-sm">تكرار ظهور هذا الفصل في الاختبارات عبر السنوات</h3>
-                <ResponsiveContainer width="100%" height={220}>
-                  <BarChart data={frequencyByPeriod} margin={{ top: 5, right: 20, bottom: 30, left: 0 }}>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={frequencyByPeriod} margin={{ top: 24, right: 20, bottom: 50, left: 0 }} barCategoryGap="28%">
                     <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
-                    <XAxis dataKey="period" tick={{ fontSize: 9, fill: tickColor }} angle={-35} textAnchor="end" interval={0} />
-                    <YAxis tick={{ fontSize: 11, fill: tickColor }} allowDecimals={false} />
-                    <Tooltip content={<CustomTooltip dark={dark} />} />
-                    <Bar dataKey="count" name="عدد الأسئلة" radius={[6, 6, 0, 0]}>
-                      {frequencyByPeriod.map((_, i) => {
-                        const blues = ["#1a4b8c","#2d6cc0","#4a9eed","#7ec8f0"];
-                        return <Cell key={i} fill={blues[i % blues.length]} />;
-                      })}
+                    <XAxis dataKey="period" tick={{ fontSize: 11, fill: tickColor }} angle={-30} textAnchor="end" interval={0} height={50} />
+                    <YAxis tick={{ fontSize: 12, fill: tickColor }} allowDecimals={false} />
+                    <Tooltip content={<CustomTooltip dark={dark} />} cursor={{ fill: dark ? "rgba(74,158,237,0.08)" : "rgba(45,108,192,0.06)" }} />
+                    <Legend wrapperStyle={{ fontSize: 12, paddingTop: 4 }} />
+                    <Bar dataKey="count" name="عدد الأسئلة" radius={[8, 8, 0, 0]}>
+                      {frequencyByPeriod.map((_, i) => (
+                        <Cell key={i} fill={yearlyBlues[i % yearlyBlues.length]} />
+                      ))}
+                      <LabelList dataKey="count" position="top" style={{ fontSize: 12, fontWeight: 700 }} fill={tickColor} />
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
@@ -280,33 +291,6 @@ export default function ChapterAnalytics() {
                 </div>
               </div>
             )}
-
-            {/* Questions List */}
-            <div className="bg-white dark:bg-[#0f2240] rounded-2xl border border-slate-100 dark:border-[#1a3a6a]/40 shadow-sm mb-8 overflow-hidden">
-              <div className="px-6 py-5 border-b border-slate-100 dark:border-[#1a3a6a]/40">
-                <h3 className="font-bold text-[#0f2240] dark:text-white text-lg">جميع الأسئلة في هذا الفصل</h3>
-                <p className="text-slate-500 dark:text-slate-400 text-sm mt-0.5">{questions.length} سؤال</p>
-              </div>
-              <div className="divide-y divide-slate-50 dark:divide-[#1a3a6a]/20">
-                {questions.map((q, i) => (
-                  <div key={q.id} className="px-6 py-5">
-                    <div className="flex items-start gap-3">
-                      <span className="w-7 h-7 bg-[#f0f6ff] dark:bg-[#0a1628] rounded-full flex items-center justify-center text-xs font-bold text-[#2d6cc0] dark:text-[#4a9eed] flex-shrink-0 mt-0.5">{i + 1}</span>
-                      <div className="flex-1 min-w-0">
-                        {q.text && <p className="text-[#0f2240] dark:text-slate-200 text-sm leading-relaxed mb-3">{q.text}</p>}
-                        {q.imageUrl && <img src={q.imageUrl} alt="question" className="max-h-40 rounded-lg border border-slate-200 dark:border-[#1a3a6a]/40 mb-3 object-contain" />}
-                        <div className="flex flex-wrap gap-2">
-                          <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${typeBadgeClass(q.questionType)}`}>{q.questionType}</span>
-                          <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full ${diffBadgeClass(q.difficulty)}`}>{q.difficulty}</span>
-                          <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-[#0a1628] text-slate-500 dark:text-slate-400">{q.year} - {q.examType}</span>
-                          {q.topic && <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#f0f6ff] dark:bg-[#0a1e3d] text-[#2d6cc0] dark:text-[#4a9eed] font-medium">{q.topic}</span>}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
 
             {/* Source Links */}
             <div className="bg-white dark:bg-[#0f2240] rounded-2xl border border-slate-100 dark:border-[#1a3a6a]/40 shadow-sm p-7">
