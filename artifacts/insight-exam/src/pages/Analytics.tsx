@@ -267,7 +267,7 @@ export default function Analytics() {
                 {finalsData.length > 0 && (
                   <ChartCard title="تكرار الفصول في اختبارات الفاينل 📋">
                     <ResponsiveContainer width="100%" height={Math.max(280, finalsData.length * 56)}>
-                      <BarChart data={finalsData} layout="vertical" margin={{ top: 12, right: 110, left: 16, bottom: 12 }} barCategoryGap="28%">
+                      <BarChart data={finalsData} layout="vertical" margin={{ top: 12, right: 130, left: 16, bottom: 12 }} barCategoryGap="28%">
                         <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke={gridStroke} />
                         <XAxis type="number" allowDecimals={false} tick={{ fontSize: 12, fill: tickColor }} />
                         <YAxis dataKey="chapter" type="category" width={210} tick={{ fontSize: 14, fill: tickColor, fontWeight: 700 }} interval={0} tickFormatter={formatChapterTick} />
@@ -277,7 +277,7 @@ export default function Analytics() {
                           {finalsData.map((_, i) => (
                             <Cell key={i} fill={blueShade(i, finalsData.length)} />
                           ))}
-                          <LabelList dataKey="labelText" position="right" fill={tickColor} fontSize={13} fontWeight={800} />
+                          <LabelList dataKey="labelText" position="right" offset={12} fill={tickColor} fontSize={13} fontWeight={800} />
                         </Bar>
                       </BarChart>
                     </ResponsiveContainer>
@@ -287,7 +287,7 @@ export default function Analytics() {
                 {midtermsData.length > 0 && (
                   <ChartCard title="تكرار الفصول في اختبارات الميد 📝">
                     <ResponsiveContainer width="100%" height={Math.max(280, midtermsData.length * 56)}>
-                      <BarChart data={midtermsData} layout="vertical" margin={{ top: 12, right: 110, left: 16, bottom: 12 }} barCategoryGap="28%">
+                      <BarChart data={midtermsData} layout="vertical" margin={{ top: 12, right: 130, left: 16, bottom: 12 }} barCategoryGap="28%">
                         <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke={gridStroke} />
                         <XAxis type="number" allowDecimals={false} tick={{ fontSize: 12, fill: tickColor }} />
                         <YAxis dataKey="chapter" type="category" width={210} tick={{ fontSize: 14, fill: tickColor, fontWeight: 700 }} interval={0} tickFormatter={formatChapterTick} />
@@ -297,7 +297,7 @@ export default function Analytics() {
                           {midtermsData.map((_, i) => (
                             <Cell key={i} fill={blueShade(i, midtermsData.length)} />
                           ))}
-                          <LabelList dataKey="labelText" position="right" fill={tickColor} fontSize={13} fontWeight={800} />
+                          <LabelList dataKey="labelText" position="right" offset={12} fill={tickColor} fontSize={13} fontWeight={800} />
                         </Bar>
                       </BarChart>
                     </ResponsiveContainer>
@@ -327,7 +327,7 @@ export default function Analytics() {
                 {breakdownData.length > 0 && (
                   <ChartCard title="مستوى صعوبة الأسئلة في كل فصل">
                     <ResponsiveContainer width="100%" height={Math.max(300, breakdownData.length * 60)}>
-                      <BarChart data={breakdownData} layout="vertical" margin={{ top: 12, right: 60, left: 16, bottom: 12 }} barCategoryGap="28%">
+                      <BarChart data={breakdownData} layout="vertical" margin={{ top: 12, right: 90, left: 16, bottom: 12 }} barCategoryGap="28%">
                         <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke={gridStroke} />
                         <XAxis type="number" allowDecimals={false} tick={{ fontSize: 12, fill: tickColor }} />
                         <YAxis dataKey="chapter" type="category" width={210} tick={{ fontSize: 14, fill: tickColor, fontWeight: 700 }} interval={0} tickFormatter={formatChapterTick} />
@@ -349,7 +349,7 @@ export default function Analytics() {
                         </Bar>
                         <Bar dataKey="hard" name="صعب" stackId="diff" fill={diffColors["صعب"]} radius={[0, 8, 8, 0]}>
                           <LabelList dataKey="hard" position="center" fill="#ffffff" fontSize={12} fontWeight={800} formatter={(v: any) => (typeof v === "number" && v >= 2 ? String(v) : "")} />
-                          <LabelList dataKey="total" position="right" fill={tickColor} fontSize={12} fontWeight={700} formatter={(v: any) => (v ? `إجمالي ${v}` : "")} />
+                          <LabelList dataKey="total" position="right" offset={10} fill={tickColor} fontSize={13} fontWeight={800} formatter={(v: any) => (v ? String(v) : "")} />
                         </Bar>
                       </BarChart>
                     </ResponsiveContainer>

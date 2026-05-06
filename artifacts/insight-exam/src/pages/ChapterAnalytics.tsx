@@ -255,10 +255,10 @@ export default function ChapterAnalytics() {
               {/* Frequency Bar */}
               <div className="bg-white dark:bg-[#0f2240] rounded-2xl border border-slate-100 dark:border-[#1a3a6a]/40 shadow-sm p-10">
                 <h3 className="font-bold text-[#0f2240] dark:text-white mb-6 text-base">تكرار ظهور هذا الفصل في الاختبارات عبر السنوات</h3>
-                <ResponsiveContainer width="100%" height={340}>
-                  <BarChart data={frequencyByPeriod} margin={{ top: 28, right: 24, bottom: 60, left: 16 }} barCategoryGap="28%">
+                <ResponsiveContainer width="100%" height={380}>
+                  <BarChart data={frequencyByPeriod} margin={{ top: 28, right: 24, bottom: 80, left: 16 }} barCategoryGap="40%">
                     <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
-                    <XAxis dataKey="period" tick={{ fontSize: 12, fill: tickColor, fontWeight: 600 }} angle={-30} textAnchor="end" interval={0} height={60} />
+                    <XAxis dataKey="period" tick={{ fontSize: 12, fill: tickColor, fontWeight: 600 }} angle={-35} textAnchor="end" interval={0} height={80} />
                     <YAxis tick={{ fontSize: 12, fill: tickColor }} allowDecimals={false} />
                     <Tooltip content={<CustomTooltip dark={dark} />} cursor={{ fill: dark ? "rgba(74,158,237,0.08)" : "rgba(45,108,192,0.06)" }} />
                     <Legend wrapperStyle={{ fontSize: 13, paddingTop: 8 }} />
