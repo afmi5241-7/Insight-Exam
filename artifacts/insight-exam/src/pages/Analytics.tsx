@@ -20,7 +20,14 @@ const diffColors: Record<string, string> = {
   "صعب": "#EF4444", "hard": "#EF4444",
 };
 
-const CHART_COLORS = ["#1a4b8c", "#2d6cc0", "#4a9eed", "#7ec8f0", "#22C55E", "#F59E0B", "#EF4444", "#a855f7", "#ec4899"];
+// Distinct colors for question-type pie — one unique color per type, no near-duplicate blues.
+const TYPE_COLORS = ["#a855f7", "#14b8a6", "#f97316", "#ec4899", "#6366f1", "#06b6d4", "#84cc16", "#f43f5e"];
+
+// Prepend "الفصل " when the chapter label is purely a number; leave full text otherwise.
+const formatChapterTick = (v: any) => {
+  const s = String(v ?? "");
+  return /^\d+$/.test(s) ? `الفصل ${s}` : s;
+};
 
 // Distinct blue shade per bar — interpolated from dark to light blue.
 function blueShade(index: number, total: number): string {
@@ -70,13 +77,17 @@ interface Analytics {
 function CustomTooltip({ active, payload, label, dark }: any) {
   if (!active || !payload?.length) return null;
   return (
-    <div className={`rounded-xl px-4 py-3 shadow-xl text-sm border ${dark ? "bg-[#0f2240] border-[#1a3a6a]/60 text-slate-200" : "bg-white border-slate-100 text-slate-800"}`}>
+    <div
+      dir="rtl"
+      className={`rounded-xl px-4 py-3 shadow-xl text-sm border text-right ${dark ? "bg-[#0f2240] border-[#1a3a6a]/60 text-slate-100" : "bg-white border-slate-200 text-slate-800"}`}
+    >
       <p className="font-semibold mb-1">{label}</p>
       {payload.map((p: any, i: number) => {
         const pct = p.payload?.percentage;
         return (
-          <p key={i} style={{ color: p.color }}>
-            {p.name}: {p.value}{pct !== undefined ? ` (${pct}%)` : ""}
+          <p key={i} className="flex items-center justify-between gap-4" style={{ color: p.color }}>
+            <span className="font-semibold">{p.name}</span>
+            <span className="font-bold">{p.value}{pct !== undefined ? ` (${pct}%)` : ""}</span>
           </p>
         );
       })}
@@ -148,8 +159,17 @@ export default function Analytics() {
       .finally(() => setLoading(false));
   }, [courseId]);
 
-  const gridStroke = dark ? "#0f2240" : "#f0f6ff";
-  const tickColor = dark ? "#94a3b8" : "#64748b";
+  const gridStroke = dark ? "#1a3a6a" : "#dbeafe";
+  const tickColor = dark ? "#f1f5f9" : "#1e293b";
+  const tooltipStyle = {
+    borderRadius: 12,
+    border: dark ? "1px solid rgba(26,58,106,0.6)" : "1px solid #e2e8f0",
+    background: dark ? "#0f2240" : "#ffffff",
+    color: dark ? "#f1f5f9" : "#1e293b",
+    direction: "rtl" as const,
+    textAlign: "right" as const,
+    padding: "10px 14px",
+  };
 
   if (loading) {
     return (
@@ -246,17 +266,18 @@ export default function Analytics() {
               <div className="space-y-6 animate-in fade-in duration-300">
                 {finalsData.length > 0 && (
                   <ChartCard title="تكرار الفصول في اختبارات الفاينل 📋">
-                    <ResponsiveContainer width="100%" height={Math.max(260, finalsData.length * 56)}>
-                      <BarChart data={finalsData} layout="vertical" margin={{ top: 8, right: 90, left: 8, bottom: 8 }} barCategoryGap="28%">
+                    <ResponsiveContainer width="100%" height={Math.max(280, finalsData.length * 56)}>
+                      <BarChart data={finalsData} layout="vertical" margin={{ top: 12, right: 110, left: 16, bottom: 12 }} barCategoryGap="28%">
                         <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke={gridStroke} />
                         <XAxis type="number" allowDecimals={false} tick={{ fontSize: 12, fill: tickColor }} />
-                        <YAxis dataKey="chapter" type="category" width={170} tick={{ fontSize: 12, fill: tickColor }} interval={0} />
+                        <YAxis dataKey="chapter" type="category" width={210} tick={{ fontSize: 14, fill: tickColor, fontWeight: 700 }} interval={0} tickFormatter={formatChapterTick} />
                         <Tooltip content={<CustomTooltip dark={dark} />} cursor={{ fill: dark ? "rgba(74,158,237,0.08)" : "rgba(45,108,192,0.06)" }} />
+                        <Legend wrapperStyle={{ fontSize: 13, paddingTop: 8 }} />
                         <Bar dataKey="count" name="عدد الأسئلة" radius={[0, 8, 8, 0]}>
                           {finalsData.map((_, i) => (
                             <Cell key={i} fill={blueShade(i, finalsData.length)} />
                           ))}
-                          <LabelList dataKey="labelText" position="right" style={{ fontSize: 12, fontWeight: 600 }} fill={tickColor} />
+                          <LabelList dataKey="labelText" position="right" fill={tickColor} fontSize={13} fontWeight={800} />
                         </Bar>
                       </BarChart>
                     </ResponsiveContainer>
@@ -265,17 +286,18 @@ export default function Analytics() {
 
                 {midtermsData.length > 0 && (
                   <ChartCard title="تكرار الفصول في اختبارات الميد 📝">
-                    <ResponsiveContainer width="100%" height={Math.max(260, midtermsData.length * 56)}>
-                      <BarChart data={midtermsData} layout="vertical" margin={{ top: 8, right: 90, left: 8, bottom: 8 }} barCategoryGap="28%">
+                    <ResponsiveContainer width="100%" height={Math.max(280, midtermsData.length * 56)}>
+                      <BarChart data={midtermsData} layout="vertical" margin={{ top: 12, right: 110, left: 16, bottom: 12 }} barCategoryGap="28%">
                         <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke={gridStroke} />
                         <XAxis type="number" allowDecimals={false} tick={{ fontSize: 12, fill: tickColor }} />
-                        <YAxis dataKey="chapter" type="category" width={170} tick={{ fontSize: 12, fill: tickColor }} interval={0} />
+                        <YAxis dataKey="chapter" type="category" width={210} tick={{ fontSize: 14, fill: tickColor, fontWeight: 700 }} interval={0} tickFormatter={formatChapterTick} />
                         <Tooltip content={<CustomTooltip dark={dark} />} cursor={{ fill: dark ? "rgba(74,158,237,0.08)" : "rgba(45,108,192,0.06)" }} />
+                        <Legend wrapperStyle={{ fontSize: 13, paddingTop: 8 }} />
                         <Bar dataKey="count" name="عدد الأسئلة" radius={[0, 8, 8, 0]}>
                           {midtermsData.map((_, i) => (
                             <Cell key={i} fill={blueShade(i, midtermsData.length)} />
                           ))}
-                          <LabelList dataKey="labelText" position="right" style={{ fontSize: 12, fontWeight: 600 }} fill={tickColor} />
+                          <LabelList dataKey="labelText" position="right" fill={tickColor} fontSize={13} fontWeight={800} />
                         </Bar>
                       </BarChart>
                     </ResponsiveContainer>
@@ -295,7 +317,7 @@ export default function Analytics() {
                           {difficultyData.map((d, i) => (
                             <Cell key={i} fill={diffColors[d.difficulty] ?? "#2d6cc0"} />
                           ))}
-                          <LabelList dataKey="labelText" position="top" style={{ fontSize: 12, fontWeight: 600 }} fill={tickColor} />
+                          <LabelList dataKey="labelText" position="top" fill={tickColor} fontSize={13} fontWeight={800} />
                         </Bar>
                       </BarChart>
                     </ResponsiveContainer>
@@ -304,28 +326,30 @@ export default function Analytics() {
 
                 {breakdownData.length > 0 && (
                   <ChartCard title="مستوى صعوبة الأسئلة في كل فصل">
-                    <ResponsiveContainer width="100%" height={Math.max(280, breakdownData.length * 56)}>
-                      <BarChart data={breakdownData} layout="vertical" margin={{ top: 8, right: 30, left: 8, bottom: 8 }} barCategoryGap="28%">
+                    <ResponsiveContainer width="100%" height={Math.max(300, breakdownData.length * 60)}>
+                      <BarChart data={breakdownData} layout="vertical" margin={{ top: 12, right: 60, left: 16, bottom: 12 }} barCategoryGap="28%">
                         <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke={gridStroke} />
                         <XAxis type="number" allowDecimals={false} tick={{ fontSize: 12, fill: tickColor }} />
-                        <YAxis dataKey="chapter" type="category" width={170} tick={{ fontSize: 12, fill: tickColor }} interval={0} />
+                        <YAxis dataKey="chapter" type="category" width={210} tick={{ fontSize: 14, fill: tickColor, fontWeight: 700 }} interval={0} tickFormatter={formatChapterTick} />
                         <Tooltip
-                          contentStyle={{ borderRadius: 12, border: dark ? "1px solid rgba(26,58,106,0.6)" : "1px solid #f0f6ff", background: dark ? "#0f2240" : "#fff", color: dark ? "#e2e8f0" : "#1e293b" }}
+                          contentStyle={tooltipStyle}
+                          cursor={{ fill: dark ? "rgba(74,158,237,0.08)" : "rgba(45,108,192,0.06)" }}
                           formatter={(v: any, name: any, props: any) => {
                             const total = props?.payload?.total ?? 0;
                             const pct = total ? Math.round((v / total) * 100) : 0;
                             return [`${v} (${pct}%)`, name];
                           }}
                         />
-                        <Legend wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
+                        <Legend wrapperStyle={{ fontSize: 13, paddingTop: 8 }} />
                         <Bar dataKey="easy" name="سهل" stackId="diff" fill={diffColors["سهل"]} radius={[0, 0, 0, 0]}>
-                          <LabelList dataKey="easy" position="center" style={{ fontSize: 11, fontWeight: 700, fill: "#fff" }} formatter={(v: any) => (v && v > 0 ? v : "")} />
+                          <LabelList dataKey="easy" position="center" fill="#ffffff" fontSize={12} fontWeight={800} formatter={(v: any) => (typeof v === "number" && v >= 2 ? String(v) : "")} />
                         </Bar>
                         <Bar dataKey="medium" name="متوسط" stackId="diff" fill={diffColors["متوسط"]} radius={[0, 0, 0, 0]}>
-                          <LabelList dataKey="medium" position="center" style={{ fontSize: 11, fontWeight: 700, fill: "#fff" }} formatter={(v: any) => (v && v > 0 ? v : "")} />
+                          <LabelList dataKey="medium" position="center" fill="#ffffff" fontSize={12} fontWeight={800} formatter={(v: any) => (typeof v === "number" && v >= 2 ? String(v) : "")} />
                         </Bar>
                         <Bar dataKey="hard" name="صعب" stackId="diff" fill={diffColors["صعب"]} radius={[0, 8, 8, 0]}>
-                          <LabelList dataKey="hard" position="center" style={{ fontSize: 11, fontWeight: 700, fill: "#fff" }} formatter={(v: any) => (v && v > 0 ? v : "")} />
+                          <LabelList dataKey="hard" position="center" fill="#ffffff" fontSize={12} fontWeight={800} formatter={(v: any) => (typeof v === "number" && v >= 2 ? String(v) : "")} />
+                          <LabelList dataKey="total" position="right" fill={tickColor} fontSize={12} fontWeight={700} formatter={(v: any) => (v ? `إجمالي ${v}` : "")} />
                         </Bar>
                       </BarChart>
                     </ResponsiveContainer>
@@ -370,25 +394,36 @@ export default function Analytics() {
               <div className="space-y-6 animate-in fade-in duration-300">
                 {typeDistribution.length > 0 && (
                   <ChartCard title="توزيع أنواع الأسئلة">
-                    <ResponsiveContainer width="100%" height={360}>
-                      <PieChart margin={{ top: 10, right: 60, bottom: 10, left: 60 }}>
+                    <ResponsiveContainer width="100%" height={420}>
+                      <PieChart margin={{ top: 10, right: 20, bottom: 60, left: 20 }}>
                         <Pie
                           data={typeDistribution.map(t => ({ ...t, name: t.label }))}
                           dataKey="count" nameKey="name"
-                          cx="50%" cy="50%" outerRadius={100}
-                          label={({ name, value, payload }: any) => `${name}: ${value} (${payload?.percentage ?? 0}%)`}
-                          labelLine={true}
+                          cx="50%" cy="42%" innerRadius={55} outerRadius={115}
+                          paddingAngle={2}
                           minAngle={4}
+                          isAnimationActive={false}
                         >
                           {typeDistribution.map((_, i) => (
-                            <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
+                            <Cell key={i} fill={TYPE_COLORS[i % TYPE_COLORS.length]} stroke={dark ? "#0f2240" : "#ffffff"} strokeWidth={2} />
                           ))}
                         </Pie>
                         <Tooltip
-                          contentStyle={{ borderRadius: 12, border: dark ? "1px solid rgba(26,58,106,0.6)" : "1px solid #f0f6ff", background: dark ? "#0f2240" : "#fff", color: dark ? "#e2e8f0" : "#1e293b" }}
+                          contentStyle={tooltipStyle}
                           formatter={(v: any, n: any, props: any) => [`${v} (${props.payload?.percentage ?? 0}%)`, n]}
                         />
-                        <Legend verticalAlign="bottom" wrapperStyle={{ fontSize: 12, paddingTop: 12 }} />
+                        <Legend
+                          verticalAlign="bottom"
+                          align="center"
+                          iconType="circle"
+                          wrapperStyle={{ fontSize: 13, paddingTop: 16 }}
+                          formatter={(value: string, entry: any) => {
+                            const p = entry?.payload;
+                            const count = p?.count ?? p?.value ?? "";
+                            const pct = p?.percentage ?? 0;
+                            return `${value} — ${count} (${pct}%)`;
+                          }}
+                        />
                       </PieChart>
                     </ResponsiveContainer>
                   </ChartCard>
@@ -568,8 +603,8 @@ function SummaryCard({ label, value, icon, gradient, small }: { label: string; v
 
 function ChartCard({ title, children, className = "" }: { title: string; children: React.ReactNode; className?: string }) {
   return (
-    <div className={`bg-white dark:bg-[#0f2240] rounded-2xl border border-slate-100 dark:border-[#1a3a6a]/40 shadow-sm p-6 transition-colors duration-300 ${className}`}>
-      <h3 className="font-bold text-[#0f2240] dark:text-white mb-5 text-sm">{title}</h3>
+    <div className={`bg-white dark:bg-[#0f2240] rounded-2xl border border-slate-100 dark:border-[#1a3a6a]/40 shadow-sm p-10 transition-colors duration-300 ${className}`}>
+      <h3 className="font-bold text-[#0f2240] dark:text-white mb-6 text-base">{title}</h3>
       {children}
     </div>
   );

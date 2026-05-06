@@ -1,0 +1,15 @@
+Fix all chart display issues across the entire analytics section. The problems are:
+1. Legend labels missing: Every chart legend currently shows only colored dots/squares with NO text next to them. Fix ALL legends to show the label text clearly next to each color dot. For example: 🔴 صعب | 🟡 متوسط | 🟢 سهل
+2. Labels overlapping inside charts: In the pie/donut charts, text labels are colliding with each other and going inside the chart. Move ALL labels OUTSIDE the chart slices with connecting lines (label lines), or place them in the legend below instead. No text should ever appear inside a small slice.
+3. Y-axis labels cut off: In all horizontal bar charts, the Y-axis must show "الفصل X" (e.g., الفصل 1, الفصل 2) — never just a number. Increase the left margin of the chart so labels have enough space and are never cut off.
+4. Light mode vs Dark mode text visibility: ALL chart text (axis labels, legends, tooltips, data labels on bars) must use dynamic colors that work in BOTH modes:
+
+Light mode: use #1e293b (dark text) for all labels
+Dark mode: use #f1f5f9 (light text) for all labels
+Never hardcode white or black text — always use CSS variables or theme-aware colors
+
+5. Pie chart colors: The "توزيع أنواع الأسئلة" pie chart currently uses 4 shades of blue that look identical. Replace with clearly distinct colors: use purple, teal, orange, pink, indigo — one unique color per question type so each slice is immediately distinguishable.
+6. Bar chart data labels: On ALL bar charts, the count and percentage label on each bar (e.g., "7 (35%)") must always appear OUTSIDE the bar end, never inside a short bar where it gets hidden. If the bar is too short to show the label inside, always show it outside.
+7. Tooltip RTL fix: All tooltip text must be right-aligned for Arabic RTL. The tooltip content order should be: label on the right, value on the left — matching Arabic reading direction.
+8. Chart container padding: Add sufficient padding (minimum 40px) on all sides of every chart so no label or axis text ever touches the card edge or gets clipped.
+Apply these fixes to: difficulty donut chart, question type pie chart, difficulty per chapter stacked bar chart, chapter frequency bar charts (finals and midterms), and chapter frequency across years bar chart.

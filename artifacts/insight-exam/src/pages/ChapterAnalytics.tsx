@@ -55,9 +55,17 @@ function buildSubmitHref(course: { faculty: string; department: string; name: st
 function CustomTooltip({ active, payload, label, dark }: any) {
   if (!active || !payload?.length) return null;
   return (
-    <div className={`rounded-xl px-4 py-3 shadow-xl text-sm border ${dark ? "bg-[#0f2240] border-[#1a3a6a]/60 text-slate-200" : "bg-white border-slate-100 text-slate-800"}`}>
+    <div
+      dir="rtl"
+      className={`rounded-xl px-4 py-3 shadow-xl text-sm border text-right ${dark ? "bg-[#0f2240] border-[#1a3a6a]/60 text-slate-100" : "bg-white border-slate-200 text-slate-800"}`}
+    >
       <p className="font-semibold mb-1">{label}</p>
-      {payload.map((p: any, i: number) => <p key={i} style={{ color: p.color }}>{p.name}: {p.value}</p>)}
+      {payload.map((p: any, i: number) => (
+        <p key={i} className="flex items-center justify-between gap-4" style={{ color: p.color }}>
+          <span className="font-semibold">{p.name}</span>
+          <span className="font-bold">{p.value}</span>
+        </p>
+      ))}
     </div>
   );
 }
@@ -111,8 +119,17 @@ export default function ChapterAnalytics() {
       .finally(() => setLoading(false));
   }, [courseId, chapter]);
 
-  const gridStroke = dark ? "#0f2240" : "#f0f6ff";
-  const tickColor = dark ? "#94a3b8" : "#64748b";
+  const gridStroke = dark ? "#1a3a6a" : "#dbeafe";
+  const tickColor = dark ? "#f1f5f9" : "#1e293b";
+  const tooltipStyle = {
+    borderRadius: 12,
+    border: dark ? "1px solid rgba(26,58,106,0.6)" : "1px solid #e2e8f0",
+    background: dark ? "#0f2240" : "#ffffff",
+    color: dark ? "#f1f5f9" : "#1e293b",
+    direction: "rtl" as const,
+    textAlign: "right" as const,
+    padding: "10px 14px",
+  };
 
   if (loading) {
     return (
@@ -198,46 +215,58 @@ export default function ChapterAnalytics() {
             {/* Charts Row */}
             <div className="grid md:grid-cols-2 gap-6 mb-8">
               {/* Donut */}
-              <div className="bg-white dark:bg-[#0f2240] rounded-2xl border border-slate-100 dark:border-[#1a3a6a]/40 shadow-sm p-6">
-                <h3 className="font-bold text-[#0f2240] dark:text-white mb-5 text-sm">مستوى صعوبة الأسئلة في هذا الفصل</h3>
-                <ResponsiveContainer width="100%" height={300}>
-                  <PieChart margin={{ top: 10, right: 30, bottom: 10, left: 30 }}>
+              <div className="bg-white dark:bg-[#0f2240] rounded-2xl border border-slate-100 dark:border-[#1a3a6a]/40 shadow-sm p-10">
+                <h3 className="font-bold text-[#0f2240] dark:text-white mb-6 text-base">مستوى صعوبة الأسئلة في هذا الفصل</h3>
+                <ResponsiveContainer width="100%" height={340}>
+                  <PieChart margin={{ top: 10, right: 20, bottom: 50, left: 20 }}>
                     <Pie
                       data={donutData}
                       dataKey="value" nameKey="name"
-                      cx="50%" cy="50%"
-                      innerRadius={55} outerRadius={90}
+                      cx="50%" cy="42%"
+                      innerRadius={55} outerRadius={100}
                       paddingAngle={3}
-                      label={({ name, value, payload }: any) => `${name}: ${value} (${payload?.percentage ?? 0}%)`}
-                      labelLine={true}
                       minAngle={4}
+                      isAnimationActive={false}
                     >
-                      {donutData.map((entry, i) => <Cell key={i} fill={entry.color} />)}
+                      {donutData.map((entry, i) => (
+                        <Cell key={i} fill={entry.color} stroke={dark ? "#0f2240" : "#ffffff"} strokeWidth={2} />
+                      ))}
                     </Pie>
                     <Tooltip
-                      contentStyle={{ borderRadius: 12, border: dark ? "1px solid rgba(26,58,106,0.6)" : "1px solid #f0f6ff", background: dark ? "#0f2240" : "#fff", color: dark ? "#e2e8f0" : "#1e293b" }}
+                      contentStyle={tooltipStyle}
                       formatter={(v: any, n: any, props: any) => [`${v} (${props.payload?.percentage ?? 0}%)`, n]}
                     />
-                    <Legend verticalAlign="bottom" wrapperStyle={{ fontSize: 12, paddingTop: 10 }} />
+                    <Legend
+                      verticalAlign="bottom"
+                      align="center"
+                      iconType="circle"
+                      wrapperStyle={{ fontSize: 13, paddingTop: 16 }}
+                      formatter={(value: string, entry: any) => {
+                        const p = entry?.payload;
+                        const count = p?.value ?? "";
+                        const pct = p?.percentage ?? 0;
+                        return `${value} — ${count} (${pct}%)`;
+                      }}
+                    />
                   </PieChart>
                 </ResponsiveContainer>
               </div>
 
               {/* Frequency Bar */}
-              <div className="bg-white dark:bg-[#0f2240] rounded-2xl border border-slate-100 dark:border-[#1a3a6a]/40 shadow-sm p-6">
-                <h3 className="font-bold text-[#0f2240] dark:text-white mb-5 text-sm">تكرار ظهور هذا الفصل في الاختبارات عبر السنوات</h3>
-                <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={frequencyByPeriod} margin={{ top: 24, right: 20, bottom: 50, left: 0 }} barCategoryGap="28%">
+              <div className="bg-white dark:bg-[#0f2240] rounded-2xl border border-slate-100 dark:border-[#1a3a6a]/40 shadow-sm p-10">
+                <h3 className="font-bold text-[#0f2240] dark:text-white mb-6 text-base">تكرار ظهور هذا الفصل في الاختبارات عبر السنوات</h3>
+                <ResponsiveContainer width="100%" height={340}>
+                  <BarChart data={frequencyByPeriod} margin={{ top: 28, right: 24, bottom: 60, left: 16 }} barCategoryGap="28%">
                     <CartesianGrid strokeDasharray="3 3" stroke={gridStroke} />
-                    <XAxis dataKey="period" tick={{ fontSize: 11, fill: tickColor }} angle={-30} textAnchor="end" interval={0} height={50} />
+                    <XAxis dataKey="period" tick={{ fontSize: 12, fill: tickColor, fontWeight: 600 }} angle={-30} textAnchor="end" interval={0} height={60} />
                     <YAxis tick={{ fontSize: 12, fill: tickColor }} allowDecimals={false} />
                     <Tooltip content={<CustomTooltip dark={dark} />} cursor={{ fill: dark ? "rgba(74,158,237,0.08)" : "rgba(45,108,192,0.06)" }} />
-                    <Legend wrapperStyle={{ fontSize: 12, paddingTop: 4 }} />
+                    <Legend wrapperStyle={{ fontSize: 13, paddingTop: 8 }} />
                     <Bar dataKey="count" name="عدد الأسئلة" radius={[8, 8, 0, 0]}>
                       {frequencyByPeriod.map((_, i) => (
                         <Cell key={i} fill={yearlyBlues[i % yearlyBlues.length]} />
                       ))}
-                      <LabelList dataKey="count" position="top" style={{ fontSize: 12, fontWeight: 700 }} fill={tickColor} />
+                      <LabelList dataKey="count" position="top" fill={tickColor} fontSize={14} fontWeight={800} />
                     </Bar>
                   </BarChart>
                 </ResponsiveContainer>
