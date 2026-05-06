@@ -26,6 +26,8 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 ### Insight Exam (artifacts/insight-exam)
 Arabic educational platform for analyzing past exam questions. Preview at `/`.
 
+**Admin backup/restore:** `/admin/export` downloads full DB as JSON (users + courses + questions). `/admin/import` wipes & restores from that JSON (transactional, FK-safe order, sequences reset). Both gated by `AdminGate` component → `POST /api/admin/verify` (default password "Insight@2026#Exam"). Express body limit raised to 50MB for large imports.
+
 **Pages:**
 - `/` — Landing page with hero, 3-step explanation, and CTAs
 - `/login` — Login with email/password (demo: demo@insight.edu / demo123)

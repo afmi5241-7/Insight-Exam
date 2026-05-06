@@ -9,6 +9,8 @@ import SubmitQuestion from "@/pages/SubmitQuestion";
 import Browse from "@/pages/Browse";
 import Analytics from "@/pages/Analytics";
 import Admin from "@/pages/Admin";
+import AdminExport from "@/pages/AdminExport";
+import AdminImport from "@/pages/AdminImport";
 import ChapterAnalytics from "@/pages/ChapterAnalytics";
 
 const queryClient = new QueryClient({
@@ -24,6 +26,8 @@ function Router() {
       <Route path="/analytics/:id" component={Analytics} />
       <Route path="/analytics/:id/chapter/:chapter" component={ChapterAnalytics} />
       <Route path="/admin" component={Admin} />
+      <Route path="/admin/export" component={AdminExport} />
+      <Route path="/admin/import" component={AdminImport} />
       <Route component={NotFound} />
     </Switch>
   );
