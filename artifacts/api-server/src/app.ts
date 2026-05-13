@@ -62,6 +62,6 @@ app.use(
   }),
 );
 
-app.use("/api", router);
+app.use("/api", routes);
 
 export default app;
