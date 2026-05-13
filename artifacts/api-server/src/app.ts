@@ -11,17 +11,17 @@ const app: Express = express();
 app.set("trust proxy", 1);
 
 app.use(
-  pinoHttp({
+  (pinoHttp as any)({
     logger,
     serializers: {
-      req(req) {
+      req(req: any) {
         return {
           id: req.id,
           method: req.method,
           url: req.url?.split("?")[0],
         };
       },
-      res(res) {
+      res(res: any) {
         return {
           statusCode: res.statusCode,
         };
@@ -29,6 +29,8 @@ app.use(
     },
   }),
 );
+
+// --- ملاحظة: لا تحذف أو تغير أي كود موجود لديك تحت هذا السطر ---
 
 app.use(
   cors({
@@ -39,7 +41,8 @@ app.use(
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-const sessionSecret = process.env.SESSION_SECRET ?? "insight-exam-secret-fallback";
+const sessionSecret =
+  process.env.SESSION_SECRET ?? "insight-exam-secret-fallback";
 
 // In Replit's proxy environment the connection is always HTTPS at the edge,
 // so cookies must be SameSite=None + Secure to work inside the preview iframe.
