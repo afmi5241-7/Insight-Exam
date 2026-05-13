@@ -1,10 +1,10 @@
 // @ts-nocheck
-import { Router, type IRouter } from "express";
-import healthRouter from "./health";
-import coursesRouter from "./courses";
-import questionsRouter from "./questions";
-import analyticsRouter from "./analytics";
-import adminRouter from "./admin";
+import { Router, type IRouter } from "express.js";
+import healthRouter from "./health.js";
+import coursesRouter from "./courses.js";
+import questionsRouter from "./questions.js";
+import analyticsRouter from "./analytics.js";
+import adminRouter from "./admin.js";
 
 const router: IRouter = Router();
 
