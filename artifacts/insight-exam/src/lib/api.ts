@@ -1,14 +1,13 @@
-export function customFetch(
-  url: string,
-  options: RequestInit = {},
-): Promise<Response> {
-  // 1. نضع رابط سيرفرك السحابي كقاعدة أساسية
-  const BASE_URL = "https://insight-exam.onrender.com";
+export function customFetch(url: string, options: RequestInit = {}): Promise<Response> {
+  // الرابط الأساسي للسيرفر (تأكد من وجود الشرطة في النهاية)
+  const BASE_URL = "https://insight-exam.onrender.com/";
 
-  // 2. ندمج الرابط الأساسي مع المسار المطلوب بشكل آمن وذكي
-  const finalUrl = new URL(url, BASE_URL).toString();
+  // تنظيف المسار المطلوب: إذا كان يبدأ بـ /api نمسحها عشان ما تتكرر، أو ندمجها يدوياً
+  const cleanUrl = url.startsWith('/') ? url.slice(1) : url;
+  const finalUrl = `${BASE_URL}${cleanUrl}`;
 
-  // 3. نرسل الطلب للسيرفر الجديد
+  console.log("Fetching from:", finalUrl); // هذا السطر بيساعدنا نتأكد في الـ Console
+
   return fetch(finalUrl, {
     ...options,
     credentials: "include",
