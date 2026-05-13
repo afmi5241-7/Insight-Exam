@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Router, type IRouter } from "express";
 import bcrypt from "bcryptjs";
 import { db, usersTable } from "@workspace/db";

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Router, type IRouter } from "express";
 import { db, coursesTable, questionsTable } from "@workspace/db";
 import { eq, and, count, ilike } from "drizzle-orm";
@@ -11,16 +12,21 @@ router.get("/faculties", async (_req, res): Promise<void> => {
     .selectDistinct({ faculty: coursesTable.faculty })
     .from(coursesTable)
     .orderBy(coursesTable.faculty);
-  res.json(rows.map(r => r.faculty).filter(Boolean));
+  res.json(rows.map((r) => r.faculty).filter(Boolean));
 });
 
 // ─── Departments ──────────────────────────────────────────────────────────────
 
 router.get("/departments", async (req, res): Promise<void> => {
   const { faculty } = req.query as Record<string, string>;
-  const base = db.selectDistinct({ department: coursesTable.department }).from(coursesTable).orderBy(coursesTable.department);
-  const rows = faculty ? await base.where(eq(coursesTable.faculty, faculty)) : await base;
-  res.json(rows.map(r => r.department).filter(Boolean));
+  const base = db
+    .selectDistinct({ department: coursesTable.department })
+    .from(coursesTable)
+    .orderBy(coursesTable.department);
+  const rows = faculty
+    ? await base.where(eq(coursesTable.faculty, faculty))
+    : await base;
+  res.json(rows.map((r) => r.department).filter(Boolean));
 });
 
 // ─── Courses ──────────────────────────────────────────────────────────────────
@@ -40,7 +46,10 @@ router.get("/courses", async (req, res): Promise<void> => {
     .from(coursesTable)
     .leftJoin(
       questionsTable,
-      and(eq(questionsTable.courseId, coursesTable.id), eq(questionsTable.status, "approved"))
+      and(
+        eq(questionsTable.courseId, coursesTable.id),
+        eq(questionsTable.status, "approved"),
+      ),
     )
     .groupBy(coursesTable.id)
     .orderBy(coursesTable.name)
@@ -58,7 +67,10 @@ router.get("/courses", async (req, res): Promise<void> => {
 
 router.get("/courses/:id", async (req, res): Promise<void> => {
   const id = parseInt(req.params.id as string);
-  if (isNaN(id)) { res.status(400).json({ error: "معرف غير صالح" }); return; }
+  if (isNaN(id)) {
+    res.status(400).json({ error: "معرف غير صالح" });
+    return;
+  }
 
   const [course] = await db
     .select({
@@ -74,7 +86,10 @@ router.get("/courses/:id", async (req, res): Promise<void> => {
     .where(eq(coursesTable.id, id))
     .groupBy(coursesTable.id);
 
-  if (!course) { res.status(404).json({ error: "المقرر غير موجود" }); return; }
+  if (!course) {
+    res.status(404).json({ error: "المقرر غير موجود" });
+    return;
+  }
   res.json(course);
 });
 

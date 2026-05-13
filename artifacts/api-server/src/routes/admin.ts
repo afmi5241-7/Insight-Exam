@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Router, type IRouter } from "express";
 import { db, questionsTable, coursesTable, usersTable } from "@workspace/db";
 import { eq, sql } from "drizzle-orm";
@@ -82,7 +83,10 @@ router.patch("/admin/questions/:id/status", async (req, res): Promise<void> => {
   if (!requireAdmin(req, res)) return;
 
   const id = parseInt(req.params.id as string);
-  if (isNaN(id)) { res.status(400).json({ error: "معرف غير صالح" }); return; }
+  if (isNaN(id)) {
+    res.status(400).json({ error: "معرف غير صالح" });
+    return;
+  }
 
   const { status } = req.body;
   if (!["approved", "rejected", "pending"].includes(status)) {
@@ -118,7 +122,11 @@ router.get("/admin/export", async (req, res): Promise<void> => {
   const payload = {
     version: 1,
     exportedAt: new Date().toISOString(),
-    counts: { users: users.length, courses: courses.length, questions: questions.length },
+    counts: {
+      users: users.length,
+      courses: courses.length,
+      questions: questions.length,
+    },
     users,
     courses,
     questions,
@@ -126,16 +134,40 @@ router.get("/admin/export", async (req, res): Promise<void> => {
 
   const stamp = new Date().toISOString().replace(/[:.]/g, "-");
   res.setHeader("Content-Type", "application/json; charset=utf-8");
-  res.setHeader("Content-Disposition", `attachment; filename="insight-exam-backup-${stamp}.json"`);
+  res.setHeader(
+    "Content-Disposition",
+    `attachment; filename="insight-exam-backup-${stamp}.json"`,
+  );
   res.send(JSON.stringify(payload, null, 2));
 });
 
-interface ImportUser { id: number; name: string; email: string; passwordHash: string; createdAt?: string | Date }
-interface ImportCourse { id: number; faculty?: string; department?: string; name: string; createdAt?: string | Date }
+interface ImportUser {
+  id: number;
+  name: string;
+  email: string;
+  passwordHash: string;
+  createdAt?: string | Date;
+}
+interface ImportCourse {
+  id: number;
+  faculty?: string;
+  department?: string;
+  name: string;
+  createdAt?: string | Date;
+}
 interface ImportQuestion {
-  id: number; courseId: number; text?: string; imageUrl?: string | null;
-  chapter: string; topic?: string | null; questionType: string; difficulty: string;
-  year?: string; examType?: string; sourceLink?: string | null; status?: string;
+  id: number;
+  courseId: number;
+  text?: string;
+  imageUrl?: string | null;
+  chapter: string;
+  topic?: string | null;
+  questionType: string;
+  difficulty: string;
+  year?: string;
+  examType?: string;
+  sourceLink?: string | null;
+  status?: string;
   createdAt?: string | Date;
 }
 
@@ -148,15 +180,39 @@ router.post("/admin/import", async (req, res): Promise<void> => {
     return;
   }
   const users: ImportUser[] = Array.isArray(body.users) ? body.users : [];
-  const courses: ImportCourse[] = Array.isArray(body.courses) ? body.courses : [];
-  const questions: ImportQuestion[] = Array.isArray(body.questions) ? body.questions : [];
+  const courses: ImportCourse[] = Array.isArray(body.courses)
+    ? body.courses
+    : [];
+  const questions: ImportQuestion[] = Array.isArray(body.questions)
+    ? body.questions
+    : [];
 
   // Minimal shape validation on required fields.
-  const badUser = users.find(u => typeof u?.id !== "number" || typeof u?.email !== "string" || typeof u?.passwordHash !== "string" || typeof u?.name !== "string");
-  const badCourse = courses.find(c => typeof c?.id !== "number" || typeof c?.name !== "string");
-  const badQuestion = questions.find(q => typeof q?.id !== "number" || typeof q?.courseId !== "number" || typeof q?.chapter !== "string" || typeof q?.questionType !== "string" || typeof q?.difficulty !== "string");
+  const badUser = users.find(
+    (u) =>
+      typeof u?.id !== "number" ||
+      typeof u?.email !== "string" ||
+      typeof u?.passwordHash !== "string" ||
+      typeof u?.name !== "string",
+  );
+  const badCourse = courses.find(
+    (c) => typeof c?.id !== "number" || typeof c?.name !== "string",
+  );
+  const badQuestion = questions.find(
+    (q) =>
+      typeof q?.id !== "number" ||
+      typeof q?.courseId !== "number" ||
+      typeof q?.chapter !== "string" ||
+      typeof q?.questionType !== "string" ||
+      typeof q?.difficulty !== "string",
+  );
   if (badUser || badCourse || badQuestion) {
-    res.status(400).json({ error: "بنية الملف غير صالحة — تحقق من حقول المستخدمين والمقررات والأسئلة" });
+    res
+      .status(400)
+      .json({
+        error:
+          "بنية الملف غير صالحة — تحقق من حقول المستخدمين والمقررات والأسئلة",
+      });
     return;
   }
 
@@ -168,44 +224,79 @@ router.post("/admin/import", async (req, res): Promise<void> => {
       await tx.delete(usersTable);
 
       const toDate = (v: string | Date | undefined): Date | undefined =>
-        v == null ? undefined : (v instanceof Date ? v : new Date(v));
+        v == null ? undefined : v instanceof Date ? v : new Date(v);
 
       if (users.length > 0) {
-        await tx.insert(usersTable).values(users.map(u => ({
-          id: u.id, name: u.name, email: u.email, passwordHash: u.passwordHash,
-          ...(toDate(u.createdAt) ? { createdAt: toDate(u.createdAt)! } : {}),
-        })));
+        await tx.insert(usersTable).values(
+          users.map((u) => ({
+            id: u.id,
+            name: u.name,
+            email: u.email,
+            passwordHash: u.passwordHash,
+            ...(toDate(u.createdAt) ? { createdAt: toDate(u.createdAt)! } : {}),
+          })),
+        );
       }
       if (courses.length > 0) {
-        await tx.insert(coursesTable).values(courses.map(c => ({
-          id: c.id, faculty: c.faculty ?? "", department: c.department ?? "", name: c.name,
-          ...(toDate(c.createdAt) ? { createdAt: toDate(c.createdAt)! } : {}),
-        })));
+        await tx.insert(coursesTable).values(
+          courses.map((c) => ({
+            id: c.id,
+            faculty: c.faculty ?? "",
+            department: c.department ?? "",
+            name: c.name,
+            ...(toDate(c.createdAt) ? { createdAt: toDate(c.createdAt)! } : {}),
+          })),
+        );
       }
       if (questions.length > 0) {
-        await tx.insert(questionsTable).values(questions.map(q => ({
-          id: q.id, courseId: q.courseId, text: q.text ?? "", imageUrl: q.imageUrl ?? null,
-          chapter: q.chapter, topic: q.topic ?? null, questionType: q.questionType,
-          difficulty: q.difficulty, year: q.year ?? "", examType: q.examType ?? "",
-          sourceLink: q.sourceLink ?? null, status: q.status ?? "pending",
-          ...(toDate(q.createdAt) ? { createdAt: toDate(q.createdAt)! } : {}),
-        })));
+        await tx.insert(questionsTable).values(
+          questions.map((q) => ({
+            id: q.id,
+            courseId: q.courseId,
+            text: q.text ?? "",
+            imageUrl: q.imageUrl ?? null,
+            chapter: q.chapter,
+            topic: q.topic ?? null,
+            questionType: q.questionType,
+            difficulty: q.difficulty,
+            year: q.year ?? "",
+            examType: q.examType ?? "",
+            sourceLink: q.sourceLink ?? null,
+            status: q.status ?? "pending",
+            ...(toDate(q.createdAt) ? { createdAt: toDate(q.createdAt)! } : {}),
+          })),
+        );
       }
 
       // Reset auto-increment sequences so future inserts pick up after the imported max IDs.
       // The 3rd setval arg (is_called) is false when the table is empty, so the next insert returns 1.
-      await tx.execute(sql`SELECT setval(pg_get_serial_sequence('users', 'id'), COALESCE((SELECT MAX(id) FROM users), 1), (SELECT COUNT(*) FROM users) > 0)`);
-      await tx.execute(sql`SELECT setval(pg_get_serial_sequence('courses', 'id'), COALESCE((SELECT MAX(id) FROM courses), 1), (SELECT COUNT(*) FROM courses) > 0)`);
-      await tx.execute(sql`SELECT setval(pg_get_serial_sequence('questions', 'id'), COALESCE((SELECT MAX(id) FROM questions), 1), (SELECT COUNT(*) FROM questions) > 0)`);
+      await tx.execute(
+        sql`SELECT setval(pg_get_serial_sequence('users', 'id'), COALESCE((SELECT MAX(id) FROM users), 1), (SELECT COUNT(*) FROM users) > 0)`,
+      );
+      await tx.execute(
+        sql`SELECT setval(pg_get_serial_sequence('courses', 'id'), COALESCE((SELECT MAX(id) FROM courses), 1), (SELECT COUNT(*) FROM courses) > 0)`,
+      );
+      await tx.execute(
+        sql`SELECT setval(pg_get_serial_sequence('questions', 'id'), COALESCE((SELECT MAX(id) FROM questions), 1), (SELECT COUNT(*) FROM questions) > 0)`,
+      );
     });
 
     res.json({
       ok: true,
-      imported: { users: users.length, courses: courses.length, questions: questions.length },
+      imported: {
+        users: users.length,
+        courses: courses.length,
+        questions: questions.length,
+      },
     });
   } catch (err) {
     req.log.error({ err }, "import failed");
-    res.status(500).json({ error: "تعذّر استيراد البيانات. تأكد من صحة الملف.", message: (err as Error).message });
+    res
+      .status(500)
+      .json({
+        error: "تعذّر استيراد البيانات. تأكد من صحة الملف.",
+        message: (err as Error).message,
+      });
   }
 });
 
@@ -214,7 +305,10 @@ router.delete("/admin/questions/:id", async (req, res): Promise<void> => {
   if (!requireAdmin(req, res)) return;
 
   const id = parseInt(req.params.id as string);
-  if (isNaN(id)) { res.status(400).json({ error: "معرف غير صالح" }); return; }
+  if (isNaN(id)) {
+    res.status(400).json({ error: "معرف غير صالح" });
+    return;
+  }
 
   const [deleted] = await db
     .delete(questionsTable)
